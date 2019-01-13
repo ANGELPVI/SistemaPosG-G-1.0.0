@@ -1,3 +1,7 @@
+//Input telefonico
+$("#cliente-tel").inputmask({"mask": "(999) 999-9999"});
+$("#editarTelefono").inputmask({"mask":"(999) 999-9999"});
+
 /*=============================================
 EDITAR CLIENTE
 =============================================*/
@@ -38,7 +42,7 @@ ELIMINAR CLIENTE
 $(".tablas").on("click", ".btnEliminarCliente", function(){
 
 	var idCliente = $(this).attr("idCliente");
-	
+
 	swal({
         title: '¿Está seguro de borrar el cliente?',
         text: "¡Si no lo está puede cancelar la acción!",
@@ -50,7 +54,7 @@ $(".tablas").on("click", ".btnEliminarCliente", function(){
         confirmButtonText: 'Si, borrar cliente!'
       }).then(function(result){
         if (result.value) {
-          
+
             window.location = "index.php?ruta=clientes&idCliente="+idCliente;
         }
 

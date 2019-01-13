@@ -184,7 +184,7 @@ MODAL AGREGAR CLIENTE
 
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
 
-                <input type="text" class="form-control input-lg" name="nuevoTelefono" placeholder="Ingresar teléfono">
+                <input type="text" class="form-control input-lg" name="nuevoTelefono" placeholder="Ingresar teléfono" id="cliente-tel">
 
               </div>
 
