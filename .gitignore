@@ -1,0 +1,8 @@
+pos.sql
+/extensiones
+vistas/bower_components
+vistas/dist
+vistas/img
+vistas/plugins
+*.html.php
+.htaccess
