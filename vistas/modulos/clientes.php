@@ -44,9 +44,6 @@
            <th>Nombre</th>
            <th>Teléfono</th>
            <th>Email</th>
-           <th>Dirección</th>
-           <th>Tipo</th>
-           <th>RFC</th>
            <th>Total compras</th>
            <th>Última compra</th>
            <th>Acciones</th>
@@ -68,15 +65,10 @@
             echo '<tr>
 
                     <td>'.($key+1).'</td>
-
                     <td>'.$value["descuento"].'</td>
-
                     <td>'.$value["nombre"].'</td>
                     <td>'.$value["telefono"].'</td>
                     <td>'.$value["email"].'</td>
-                    <td>'.$value["direccion"].'</td>
-                    <td>'.$value["tipo"].'</td>
-                    <td>'.$value["rfc"].'</td>
                     <td>'.$value["compras"].'</td>
                     <td>'.$value["ultima_compra"].'</td>
                     <td>
@@ -94,6 +86,7 @@
                       echo '</div>
 
                     </td>
+
 
                   </tr>';
 
@@ -211,44 +204,7 @@ MODAL AGREGAR CLIENTE
 
             </div>
 
-            <!-- ENTRADA PARA LA DIRECCIÓN -->
-
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-
-                <input type="text" class="form-control input-lg" name="nuevoDireccion" placeholder="Ingresar dirección">
-
-              </div>
-
-            </div>
-
-            <!-- ENTRADA PARA EL TIPO -->
-            <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-angle-down"></i></span>
-                <select name="nuevoTipo" class="form-control input-lg" required>
-                  <option selected disabled value="">Seleccione el tipo de Cliente</option>
-                  <option>Empresa</option>
-                  <option>Persona</option>
-                  <option>Público General</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- ENTRADA PARA EL RFC -->
-            <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-registered"></i></span>
-                <input type="text" class="form-control input-lg" name="nuevoRfc" placeholder="Ingresar RFC">
-              </div>
-            </div>
-
-
           </div>
-
         </div>
 
         <!--=====================================
@@ -376,43 +332,6 @@ MODAL EDITAR CLIENTE
               </div>
 
             </div>
-
-            <!-- ENTRADA PARA LA DIRECCIÓN -->
-
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-
-                <input type="text" class="form-control input-lg" name="editarDireccion" id="editarDireccion">
-
-              </div>
-
-            </div>
-
-            <!-- ENTRADA PARA EL TIPO -->
-            <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-angle-down"></i></span>
-                <select name="editarTipo" class="form-control input-lg">
-                  <option id="editarTipo"></option>
-                  <option>Empresa</option>
-                  <option>Persona</option>
-                  <option>Público General</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- ENTRADA PARA EL RFC -->
-            <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-registered"></i></span>
-                <input type="text" class="form-control input-lg" name="editarRfc" id="editarRfc" placeholder="Ingresar RFC">
-              </div>
-            </div>
-
-
 
           </div>
 

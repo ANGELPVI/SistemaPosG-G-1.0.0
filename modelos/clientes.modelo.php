@@ -10,15 +10,12 @@ class ModeloClientes{
 
 	static public function mdlIngresarCliente($tabla, $datos){
 
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(id_descuento, nombre, telefono, email, direccion, tipo, rfc) VALUES (:descuento, :nombre, :telefono, :email,  :direccion, :tipo, :rfc)");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(id_descuento, nombre, telefono, email) VALUES (:descuento, :nombre, :telefono, :email)");
 
 		$stmt->bindParam(":descuento", $datos["id_descuento"], PDO::PARAM_INT);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":telefono", $datos["telefono"], PDO::PARAM_STR);
 		$stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
-		$stmt->bindParam(":direccion", $datos["direccion"], PDO::PARAM_STR);
-		$stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_STR);
-		$stmt->bindParam(":rfc", $datos["rfc"], PDO::PARAM_STR);
 
 		if($stmt->execute()){
 
@@ -43,7 +40,7 @@ class ModeloClientes{
 
 		if($item != null){
 
-			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.direccion,c.compras,c.tipo,c.rfc,c.ultima_compra,c.estado,c.fecha FROM $tabla c WHERE c.$item = :$item");
+			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.estado,c.fecha FROM $tabla c WHERE c.$item = :$item");
 
 			$stmt -> bindParam(":".$item, $valor, PDO::PARAM_STR);
 
@@ -53,7 +50,7 @@ class ModeloClientes{
 
 		}else{
 
-			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.direccion,c.compras,c.tipo,c.rfc,c.ultima_compra,c.estado,c.fecha FROM $tabla c");
+			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.estado,c.fecha FROM $tabla c");
 
 			$stmt -> execute();
 
@@ -92,16 +89,13 @@ class ModeloClientes{
 
 	static public function mdlEditarCliente($tabla, $datos){
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET id_descuento = :descuento, nombre = :nombre, telefono = :telefono, email = :email,  direccion = :direccion, tipo = :tipo, rfc = :rfc WHERE id = :id");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET id_descuento = :descuento, nombre = :nombre, telefono = :telefono, email = :email WHERE id = :id");
 
 		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
 		$stmt->bindParam(":descuento", $datos["id_descuento"], PDO::PARAM_INT);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
 		$stmt->bindParam(":telefono", $datos["telefono"], PDO::PARAM_STR);
-		$stmt->bindParam(":direccion", $datos["direccion"], PDO::PARAM_STR);
-		$stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_STR);
-		$stmt->bindParam(":rfc", $datos["rfc"], PDO::PARAM_STR);
 
 		if($stmt->execute()){
 
