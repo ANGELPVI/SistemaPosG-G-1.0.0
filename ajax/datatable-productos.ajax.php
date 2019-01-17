@@ -73,7 +73,7 @@ class TablaProductos{
 	   	echo $datosJson;
   }
 
-  // AQUI TERMINA
+  
 
 }
 /*=============================================

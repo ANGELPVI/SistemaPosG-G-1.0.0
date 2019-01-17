@@ -78,31 +78,6 @@
 			</li>';
 		}
 
-		if($_SESSION["perfil"] == "Super Administrador" || $_SESSION["perfil"] == "Administrador"){
-			echo '<li class="treeview" id="liCompras">
-				<a href="#">
-					<i class="fa fa-shopping-bag"></i>
-					<span>Compras</span>
-					<span class="pull-right-container">
-						<i class="fa fa-angle-left pull-right"></i>
-					</span>
-				</a>
-				<ul class="treeview-menu">
-					<li id="liCompras1">
-						<a href="compras">
-							<i class="fa fa-circle-o"></i>
-							<span>Administrar compras</span>
-						</a>
-					</li>
-					<li id="liCompras2">
-						<a href="crear-compra">
-							<i class="fa fa-circle-o"></i>
-							<span>Crear compra</span>
-						</a>
-					</li>';
-				echo '</ul>
-			</li>';
-		}
 
 		if($_SESSION["perfil"] == "Super Administrador" || $_SESSION["perfil"] == "Administrador" || $_SESSION["perfil"] == "Vendedor"){
 			echo '<li class="treeview" id="liVentas">
