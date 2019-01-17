@@ -137,7 +137,6 @@ CUERPO DOCUMENTO
       if($_GET["ruta"] == "inicio" ||
          $_GET["ruta"] == "usuarios" ||
          $_GET["ruta"] == "categorias" ||
-         $_GET["ruta"] == "proveedores" ||
          $_GET["ruta"] == "productos" ||
          $_GET["ruta"] == "descuentos" ||
          $_GET["ruta"] == "clientes" ||

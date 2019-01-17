@@ -34,7 +34,7 @@ class ModeloProductos{
 		$stmt->bindParam(":precio_compra", $datos["precio_compra"], PDO::PARAM_STR);
 		$stmt->bindParam(":precio_venta", $datos["precio_venta"], PDO::PARAM_STR);
 		$stmt->bindParam(":stock", $datos["stock"], PDO::PARAM_STR);
-		
+
 		if($stmt->execute()){
 			return "ok";
 		}else{
@@ -49,7 +49,7 @@ class ModeloProductos{
 	=============================================*/
 	static public function mdlEditarProducto($tabla, $datos){
 		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET id_proveedor=:id_proveedor, id_categoria=:id_categoria, codigo=:codigo, descripcion= :descripcion, imagen=:imagen, precio_compra=:precio_compra, precio_venta=:precio_venta, stock=:stock WHERE id = :id");
-		
+
 		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_proveedor", $datos["id_proveedor"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_categoria", $datos["id_categoria"], PDO::PARAM_INT);
@@ -59,11 +59,11 @@ class ModeloProductos{
 		$stmt->bindParam(":precio_compra", $datos["precio_compra"], PDO::PARAM_STR);
 		$stmt->bindParam(":precio_venta", $datos["precio_venta"], PDO::PARAM_STR);
 		$stmt->bindParam(":stock", $datos["stock_almacen"], PDO::PARAM_STR);
-		
-		
-		
-		
-		
+
+
+
+
+
 		if($stmt->execute()){
 			return "ok";
 		}else{
@@ -82,7 +82,7 @@ class ModeloProductos{
 		if($stmt -> execute()){
 			return "ok";
 		}else{
-			return "error";	
+			return "error";
 		}
 		$stmt -> close();
 		$stmt = null;
@@ -98,7 +98,7 @@ class ModeloProductos{
 		if($stmt -> execute()){
 			return "ok";
 		}else{
-			return "error";	
+			return "error";
 		}
 		$stmt -> close();
 		$stmt = null;
@@ -106,7 +106,7 @@ class ModeloProductos{
 
 	/*=============================================
 	MOSTRAR SUMA VENTAS
-	=============================================*/	
+	=============================================*/
 	static public function mdlMostrarSumaVentas($tabla){
 		$stmt = Conexion::conectar()->prepare("SELECT SUM(ventas) as total FROM $tabla");
 		$stmt -> execute();

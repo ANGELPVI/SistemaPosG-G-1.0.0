@@ -3,7 +3,7 @@
 		<ul class="sidebar-menu">
 
 		<?php
-		
+
 		if($_SESSION["perfil"] != "Vendedor"){
 			echo '<li id="liInicio">
 				<a href="inicio">
@@ -12,17 +12,7 @@
 				</a>
 			</li>';
 		}
-		
 
-
-		// if($_SESSION["perfil"] == "Super Administrador"){
-		// 	echo '<li id="liSucursales">
-		// 		<a href="sucursales">
-		// 			<i class="fa fa-building"></i>
-		// 			<span>Sucursales</span>
-		// 		</a>
-		// 	</li>';
-		// }
 
 		if($_SESSION["perfil"] == "Super Administrador" || $_SESSION["perfil"] == "Administrador"){
 			echo '<li id="liUsuarios">
@@ -55,16 +45,11 @@
 							<i class="fa fa-circle-o"></i>
 							<span>Clientes</span>
 						</a>
-					</li>';
+					</li>
+					</ul>
+				</li>';
 				}
-				echo '</ul>
-			</li>
-			<li id="liProveedores">
-				<a href="proveedores">
-					<i class="fa fa-cubes"></i>
-					<span>Proveedores</span>
-				</a>
-			</li>';
+
 		}
 
 		if($_SESSION["perfil"] == "Super Administrador" || $_SESSION["perfil"] == "Administrador"){
@@ -82,7 +67,7 @@
 							<i class="fa fa-th"></i>
 							<span>Categorías</span>
 						</a>
-					</li>	
+					</li>
 					<li id="liProductos2">
 						<a href="productos">
 							<i class="fa fa-product-hunt"></i>
@@ -104,7 +89,7 @@
 				</a>
 				<ul class="treeview-menu">
 					<li id="liCompras1">
-						<a href="compras">	
+						<a href="compras">
 							<i class="fa fa-circle-o"></i>
 							<span>Administrar compras</span>
 						</a>
@@ -115,15 +100,6 @@
 							<span>Crear compra</span>
 						</a>
 					</li>';
-
-				/*if($_SESSION["perfil"] == "Super Administrador"){
-					echo '<li id="liCompras3">
-						<a href="reportes-compras">
-							<i class="fa fa-circle-o"></i>
-							<span>Reporte de compras</span>
-						</a>
-					</li>';
-				}*/
 				echo '</ul>
 			</li>';
 		}
@@ -150,7 +126,7 @@
 							<span>Crear venta</span>
 						</a>
 					</li>';
-			
+
 				echo '</ul>
 			</li>';
 		} ?>*/

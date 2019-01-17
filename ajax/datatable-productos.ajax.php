@@ -7,34 +7,34 @@ require_once "../controladores/categorias.controlador.php";
 require_once "../modelos/categorias.modelo.php";
 
 
-require_once "../controladores/proveedores.controlador.php";
-require_once "../modelos/proveedores.modelo.php";
+// require_once "../controladores/proveedores.controlador.php";
+// require_once "../modelos/proveedores.modelo.php";
 
 class TablaProductos{
 
   /*=============================================
   MOSTRAR LA TABLA DE PRODUCTO
-  =============================================*/ 
-  public function mostrarTabla(){ 
+  =============================================*/
+  public function mostrarTabla(){
   	$item=null;
   	$valor=null;
 
   	$productos = ControladorProductos::ctrMostrarProductos($item, $valor);
 
-  	
+
 
   	$datosJson = '{
 	  "data": [';
 
-	  for ($i=0; $i < count($productos); $i++) { 
+	  for ($i=0; $i < count($productos); $i++) {
 
 		$item = "id";
 		$valor = $productos[$i]["id_categoria"];
 		$categorias = ControladorCategorias::ctrMostrarCategorias($item, $valor);
 
 		$item3="id";
-		$valor3 = $productos[$i]["id_proveedor"];
-		$proveedores = ControladorProveedores::ctrMostrarProveedores($item3, $valor3);
+		//$valor3 = $productos[$i]["id_proveedor"];
+		//$proveedores = ControladorProveedores::ctrMostrarProveedores($item3, $valor3);
   		// Imagen de los productos
   		$imagen="<img src='".$productos[$i]["imagen"]."' width='40px'>";
 
@@ -48,13 +48,12 @@ class TablaProductos{
   			$stock="<button class='btn btn-warning'>".$productos[$i]["stock"]."</buton>";
   		}else{
   			$stock="<button class='btn btn-success'>".$productos[$i]["stock"]."</buton>";
-  			
+
   		}
-	  	
+
 	  	$datosJson.= '[
 	      "'.($i+1).'",
 	      "'.$productos[$i]["descripcion"].'",
-	      "'.$proveedores["nombre"].'",
 	      "'.$categorias["categoria"].'",
 	      "'.$imagen.'",
 	      "'.$productos[$i]["codigo"].'",
@@ -72,12 +71,13 @@ class TablaProductos{
 	   	}';
 
 	   	echo $datosJson;
-
   }
+
+  // AQUI TERMINA
 
 }
 /*=============================================
 ACTIVAR TABLA DE PRODUCTOS
-=============================================*/ 
+=============================================*/
 $activar = new TablaProductos();
 $activar -> mostrarTabla();

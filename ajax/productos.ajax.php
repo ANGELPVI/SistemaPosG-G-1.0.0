@@ -25,7 +25,7 @@ class AjaxProductos{
 
   /*=============================================
   EDITAR PRODUCTO
-  =============================================*/ 
+  =============================================*/
   public $idProducto;
   public $traerProductos;
   public $nombreProducto;
@@ -71,7 +71,7 @@ class AjaxProductos{
 
 /*=============================================
 GENERAR CÓDIGO A PARTIR DE ID CATEGORIA
-=============================================*/	
+=============================================*/
 if(isset($_POST["idCategoria"])){
 	$codigoProducto = new AjaxProductos();
 	$codigoProducto -> idCategoria = $_POST["idCategoria"];
@@ -79,7 +79,7 @@ if(isset($_POST["idCategoria"])){
 }
 /*=============================================
 EDITAR PRODUCTO
-=============================================*/ 
+=============================================*/
 if(isset($_POST["idProducto"])){
   $editarProducto = new AjaxProductos();
   $editarProducto -> idProducto = $_POST["idProducto"];
@@ -88,7 +88,7 @@ if(isset($_POST["idProducto"])){
 
 /*=============================================
 TRAER PRODUCTO
-=============================================*/ 
+=============================================*/
 if(isset($_POST["traerProductos"])){
   $traerProductos = new AjaxProductos();
   $traerProductos -> traerProductos = $_POST["traerProductos"];
@@ -97,7 +97,7 @@ if(isset($_POST["traerProductos"])){
 
 /*=============================================
 TRAER PRODUCTO
-=============================================*/ 
+=============================================*/
 if(isset($_POST["nombreProducto"])){
   $traerProductos = new AjaxProductos();
   $traerProductos -> nombreProducto = $_POST["nombreProducto"];

@@ -19,7 +19,7 @@ if($(".perfilUsuario").val() != "Super Administrador"){
 var tabla= $('.tablaProductos').DataTable( {
        "ajax": "ajax/datatable-productos.ajax.php",
 
-       
+
         "language": {
 
 			"sProcessing":     "Procesando...",
@@ -61,7 +61,7 @@ ACTIVAR LOS BOTONES CON LOS ID CORRESPONDIENTES
 // 	}else{
 // 		var data = table.row( $(this).parents('tbody tr ul li')).data();
 // 	}
-// 	$(this).attr("idProducto", data[14]);	
+// 	$(this).attr("idProducto", data[14]);
 // 	$(this).attr("codigo", data[4]);
 // 	$(this).attr("imagen", data[3]);
 // } );
@@ -78,7 +78,7 @@ function cargarImagenes(){
 	var limiteStock2 = $(".limiteStock2");
 
 	for(var i = 0; i < imgTabla.length; i ++){
-		var data = table.row( $(imgTabla[i]).parents("tr")).data();	
+		var data = table.row( $(imgTabla[i]).parents("tr")).data();
 		$(imgTabla[i]).attr("src", data[3]);
 
 		var exi = parseInt(data[10]);
@@ -227,7 +227,7 @@ $("#nuevaCategoria").change(function(){
           	$("#nuevoCodigo").val(nuevoCodigo);
 
       	}
-                
+
       }
 
   	})
@@ -242,7 +242,7 @@ $("#nuevoPrecioCompra, #editarPrecioCompra").change(function(){
 	if($(".porcentaje").prop("checked")){
 
 		var valorPorcentaje = $(".nuevoPorcentaje").val();
-		
+
 		var porcentaje = Number(($("#nuevoPrecioCompra").val()*valorPorcentaje/100))+Number($("#nuevoPrecioCompra").val());
 
 		var editarPorcentaje = Number(($("#editarPrecioCompra").val()*valorPorcentaje/100))+Number($("#editarPrecioCompra").val());
@@ -265,7 +265,7 @@ $(".nuevoPorcentaje").change(function(){
 	if($(".porcentaje").prop("checked")){
 
 		var valorPorcentaje = $(this).val();
-		
+
 		var porcentaje = Number(($("#nuevoPrecioCompra").val()*valorPorcentaje/100))+Number($("#nuevoPrecioCompra").val());
 
 		var editarPorcentaje = Number(($("#editarPrecioCompra").val()*valorPorcentaje/100))+Number($("#editarPrecioCompra").val());
@@ -300,7 +300,7 @@ SUBIENDO LA FOTO DEL PRODUCTO
 $(".nuevaImagen").change(function(){
 
 	var imagen = this.files[0];
-	
+
 	/*=============================================
   	VALIDAMOS EL FORMATO DE LA IMAGEN SEA JPG O PNG
   	=============================================*/
@@ -362,7 +362,7 @@ $(".tablaProductos tbody").on("click", "button.btnEditarProducto", function(){
       	dataType:"json",
   		success:function(respuesta){
   			$("#editarId").val(respuesta["id"]);
-			
+
   	// 		var datosSucursal = new FormData();
    //  		datosSucursal.append("idSucursal",respuesta["id_sucursal"]);
 			// $.ajax({
@@ -394,7 +394,7 @@ $(".tablaProductos tbody").on("click", "button.btnEditarProducto", function(){
                   	$("#editarProveedor").html(respuesta["nombre"]);
               	}
           	})
-      
+
       		var datosCategoria = new FormData();
       		datosCategoria.append("idCategoria",respuesta["id_categoria"]);
            	$.ajax({
@@ -416,7 +416,7 @@ $(".tablaProductos tbody").on("click", "button.btnEditarProducto", function(){
        		$("#editarStock_almacen").val(respuesta["stock"]);
        		$("#editarPrecioCompra").val(respuesta["precio_compra"]);
        		$("#editarPrecioVenta").val(respuesta["precio_venta"]);
-           
+
        		if(respuesta["imagen"] != ""){
 
        			$("#imagenActual").val(respuesta["imagen"]);

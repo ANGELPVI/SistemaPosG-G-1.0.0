@@ -39,7 +39,7 @@ class ControladorProductos{
 						=============================================*/
 						$aleatorio = mt_rand(100,999);
 						$ruta = "vistas/img/productos/".$_POST["nuevoCodigo"]."/".$aleatorio.".jpg";
-						$origen = imagecreatefromjpeg($_FILES["nuevaImagen"]["tmp_name"]);						
+						$origen = imagecreatefromjpeg($_FILES["nuevaImagen"]["tmp_name"]);
 						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
 						imagejpeg($destino, $ruta);
@@ -51,7 +51,7 @@ class ControladorProductos{
 						=============================================*/
 						$aleatorio = mt_rand(100,999);
 						$ruta = "vistas/img/productos/".$_POST["nuevoCodigo"]."/".$aleatorio.".png";
-						$origen = imagecreatefrompng($_FILES["nuevaImagen"]["tmp_name"]);						
+						$origen = imagecreatefrompng($_FILES["nuevaImagen"]["tmp_name"]);
 						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
 						imagepng($destino, $ruta);
@@ -96,7 +96,7 @@ class ControladorProductos{
 								}
 							})
 				  	</script>';
-					
+
 				}else if( isset($validacionDescripcion["id"]) && $validacionDescripcion["id_sucursal"]==$datos["id_sucursal"] ){
 
 					echo'<script>
@@ -181,9 +181,9 @@ class ControladorProductos{
 					if(!empty($_POST["imagenActual"]) && $_POST["imagenActual"] != "vistas/img/productos/default/anonymous.png"){
 						unlink($_POST["imagenActual"]);
 					}else{
-						mkdir($directorio, 0755);	
+						mkdir($directorio, 0755);
 					}
-					
+
 					/*=============================================
 					DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
 					=============================================*/
@@ -193,7 +193,7 @@ class ControladorProductos{
 						=============================================*/
 						$aleatorio = mt_rand(100,999);
 						$ruta = "vistas/img/productos/".$_POST["editarCodigo"]."/".$aleatorio.".jpg";
-						$origen = imagecreatefromjpeg($_FILES["editarImagen"]["tmp_name"]);						
+						$origen = imagecreatefromjpeg($_FILES["editarImagen"]["tmp_name"]);
 						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
 						imagejpeg($destino, $ruta);
@@ -205,7 +205,7 @@ class ControladorProductos{
 						=============================================*/
 						$aleatorio = mt_rand(100,999);
 						$ruta = "vistas/img/productos/".$_POST["editarCodigo"]."/".$aleatorio.".png";
-						$origen = imagecreatefrompng($_FILES["editarImagen"]["tmp_name"]);						
+						$origen = imagecreatefrompng($_FILES["editarImagen"]["tmp_name"]);
 						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
 						imagepng($destino, $ruta);
@@ -308,7 +308,7 @@ class ControladorProductos{
 
 				</script>';
 
-			}		
+			}
 		}
 
 
