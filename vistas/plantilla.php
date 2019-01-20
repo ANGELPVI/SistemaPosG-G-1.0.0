@@ -19,7 +19,7 @@ session_start();
    <!--=====================================
   PLUGINS DE CSS
   ======================================-->
-
+  <link type="style" href="dist/css/crearVenta.css">
   <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="vistas/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
@@ -182,7 +182,6 @@ CUERPO DOCUMENTO
 <script src="vistas/js/plantilla.js"></script>
 <script src="vistas/js/usuarios.js"></script>
 <script src="vistas/js/categorias.js"></script>
-<script src="vistas/js/proveedores.js"></script>
 <script src="vistas/js/productos.js"></script>
 <script src="vistas/js/descuentos.js"></script>
 <script src="vistas/js/clientes.js"></script>

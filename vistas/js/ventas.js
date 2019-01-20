@@ -21,3 +21,53 @@ $(document).ready(function() {
 	});
 
 });
+
+/*=============================================
+MOSTRAR LAS VENTANAS MODALES POR COMBINACIÓN DE TECLAS
+=============================================*/
+document.addEventListener("keydown", function(e){
+	 // alert(e.which);
+	 if (e.ctrlKey && (e.which===66)){
+		$("#modalCopiasBN").modal("toggle");
+	 }else if (e.ctrlKey && (e.which===67)){
+	 	$("#modalCopiasColor").modal("toggle");
+	 }else if (e.ctrlKey && (e.which===112)){
+	 	$("#modalImpresionBN").modal("toggle");
+	 }else if(e.ctrlKey && (e.which===113)){
+	 	$("#modalImpresionColor").modal("toggle");
+	 }else if (e.ctrlKey && (e.which===114)) {
+	 	$("#modalProductoExtenso").modal("toggle");
+	 }
+});
+
+/*=============================================
+VALIDAR EL FORMULARIO DE COPIAS BLANCO Y NEGRO
+=============================================*/
+$("#formCopiasBN").submit(function(e){
+	console.log("hola");
+	e.preventDefault();
+});
+
+$("#formCopiasColor").submit(function(e){
+	console.log("Hola del formulario copias color");
+	e.preventDefault();
+});
+
+$("#formImprecionBN").submit(function(e){
+	console.log("Hola del formulario imprecion B/N");
+	e.preventDefault();
+});
+
+$("#formImprecionColor").submit(function(e){
+	console.log("Hola del formulario imprecion color");
+	e.preventDefault();
+});
+
+$("#formProductoExtenso").submit(function(e){
+	console.log("Hola del formulario producto extenso");
+	e.preventDefault();
+});
+
+
+
+ 
