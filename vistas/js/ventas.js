@@ -26,7 +26,6 @@ $(document).ready(function() {
 MOSTRAR LAS VENTANAS MODALES POR COMBINACIÓN DE TECLAS
 =============================================*/
 document.addEventListener("keydown", function(e){
-	 // alert(e.which);
 	 if (e.ctrlKey && (e.which===66)){
 		$("#modalCopiasBN").modal("toggle");
 	 }else if (e.ctrlKey && (e.which===67)){
@@ -68,6 +67,38 @@ $("#formProductoExtenso").submit(function(e){
 	e.preventDefault();
 });
 
+
+/*=============================================
+BUSCAR PRODUCTO POR NOMBRE O CODIGO CON EL PANEL DE CONTROL
+=============================================*/
+$("#busquedaProducto").keyup(function(e){
+	var buscar=$("#busquedaProducto").val();
+	if (buscar!=""){
+		var codigo=e.which;
+		var letras=String.fromCharCode(codigo);	
+		var datos=new FormData();
+		datos.append('letras',letras);
+		$.ajax({
+			  url:"ajax/crearVenta.ajax.php",
+		      method: "POST",
+		      data: datos,
+		      cache: false,
+		      contentType: false,
+		      processData: false,
+		      dataType:"json",
+		      success:function(respuesta){
+		      		for(var i in respuesta){
+		      			$(".productos").html(respuesta[i].descripcion);
+		      		}
+
+		      }
+		});
+
+	}else{
+		$(".productos").html("");
+	}
+	
+});
 
 
  

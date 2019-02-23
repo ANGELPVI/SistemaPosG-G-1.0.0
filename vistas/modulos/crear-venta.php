@@ -78,12 +78,13 @@
 
           <div class="box-header">Panel De Venta</div>
           <div class="box-body">
-            <form method="post">
+
               <div class="form-group">
                   <label for="producto">Código del proucto</label>
-                   <input type="text" class="form-control" name="producto">
+                   <input type="text" class="form-control" name="producto" id="busquedaProducto">
               </div>
-            </form>
+      
+            <div class="productos"></div>
             
           </div>
           
