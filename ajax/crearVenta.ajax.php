@@ -37,20 +37,40 @@ class BuscarProductoVenta{
 		$idUsuaVenta=$this->idUsuaVenta;
 		 $mostraProductos=ControlCrearVenta::ctlmostrarProductos($idUsuaVenta);
 		while ($row=$mostraProductos->fetch(PDO::FETCH_ASSOC)){
-			echo '
-			<tr>
-				<td>'.$row["codigo"].'</td>
-				<td>'.$row["descripcion"].'</td>
-				<td>$'.$row["precio_venta"].'</td>
-				<td>'.$row["cantidad"].'</td>
-				<td>$'.$row["Total"].'</td>
-				<td>
-				<div class="btn-group">
-				<button class="btn btn-success" data-agreIdVendedor="'.$row["id_carrito_vendedor"].'" data-agreIdProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-plus"></i></button>
-				<button class="btn btn-danger" data-idVendedor="'.$row["id_carrito_vendedor"].'" data-idProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-times"></i></button>
-				</div>
-				</td>
-			</tr>';
+			if ($row["stock"]==0) {
+				echo '
+				<tr>
+					<td>'.$row["codigo"].'</td>
+					<td>'.$row["descripcion"].'</td>
+					<td>$'.$row["precio_venta"].'</td>
+					<td>'.$row["cantidad"].'</td>
+					<td>$'.$row["Total"].'</td>
+					<td>
+					<div class="btn-group">
+					<button disabled class="btn btn-success" data-agreIdVendedor="'.$row["id_carrito_vendedor"].'" data-agreIdProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-plus"></i></button>
+					<button class="btn btn-danger" data-idVendedor="'.$row["id_carrito_vendedor"].'" data-idProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-times"></i></button>
+					</div>
+					</td>
+				</tr>';
+
+			}else{
+				echo '
+				<tr>
+					<td>'.$row["codigo"].'</td>
+					<td>'.$row["descripcion"].'</td>
+					<td>$'.$row["precio_venta"].'</td>
+					<td>'.$row["cantidad"].'</td>
+					<td>$'.$row["Total"].'</td>
+					<td>
+					<div class="btn-group">
+					<button class="btn btn-success" data-agreIdVendedor="'.$row["id_carrito_vendedor"].'" data-agreIdProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-plus"></i></button>
+					<button class="btn btn-danger" data-idVendedor="'.$row["id_carrito_vendedor"].'" data-idProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-times"></i></button>
+					</div>
+					</td>
+				</tr>';
+
+			}
+
 		}
 
 	}
