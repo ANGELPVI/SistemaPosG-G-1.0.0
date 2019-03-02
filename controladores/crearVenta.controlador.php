@@ -25,5 +25,9 @@ class ControlCrearVenta{
 		$mostrarProduc=ModeloCrearVenta::mdlmostrarProductosVenta($idU);
 		return $mostrarProduc;
 	}
-
+	//Eliminar productos del carrito de compras
+	static public function ctlEliminarProducto($eliminarProducto,$eliminarVendedor,$pregunta){
+		$eliminarProducto=ModeloCrearVenta::mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta);
+		return $eliminarProducto;
+	}
 }

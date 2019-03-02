@@ -33,7 +33,7 @@
             <table class="table dt-responsive">
               <thead>
                 <tr>
-                  <th>Codigo</th>
+                  <th>Código</th>
                   <th>Producto</th>
                   <th>Costo</th>
                   <th>Cantidad</th>
@@ -42,24 +42,14 @@
                 </tr>
               </thead>
 
-              <tbody id="productosVentas">
-                <!-- <tr>
-                  <td>1</td>
-                  <td>Lapiz del #2</td>
-                  <td>$5.00</td>
-                  <td>1</td>
-                  <td>$5.00</td>
-                  <td><div class='btn-group'><button class='btn btn-success'> <i class='fa fa-plus'></i></button><button class='btn btn-danger'><i class='fa fa-times'></i></button></div></td>
-                </tr> -->
-
-              </tbody>
+              <tbody id="productosVentas"></tbody>
 
             </table>
           </div>
 
           <div class="box-footer">
-            <h5><strong>Descuento: %0</strong></h5>
-            <h5><strong>Total: $13.00</strong></h5>
+            <!-- <h5><strong>Descuento: %0</strong></h5> -->
+            <h4 id="totalVenta"></h4>
           </div>
 
         </div>

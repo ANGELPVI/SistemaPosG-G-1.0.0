@@ -9,7 +9,8 @@ class ModeloCrearVenta{
 
 	static public function mdlBuscarProducto($valor){
 
-		$stmt = Conexion::conectar()->prepare("SELECT id,descripcion, codigo,stock FROM productos WHERE descripcion LIKE '$valor%' OR codigo LIKE '$valor%'");
+		$stmt = Conexion::conectar()->prepare("SELECT id,descripcion, codigo,stock FROM productos WHERE descripcion LIKE '$valor%' OR codigo LIKE '$valor%'
+		ORDER BY descripcion ASC");
 
 		if($stmt->execute()){
 
@@ -57,5 +58,21 @@ class ModeloCrearVenta{
 			}
 			$stmt->close();
 			$stmt=null;
+	}
+	/*=============================================
+	ELIMINAR PRODUCTOS DEL CARRITO DE COMPRAS
+	=============================================*/
+	static public function mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta){
+		$stmt=conexion::conectar()->prepare("CALL elimina_agregar(:produc,:vendedor,:pregunta)");
+		$stmt->bindParam(":produc",$eliminarProducto,PDO::PARAM_INT);
+		$stmt->bindParam("vendedor",$eliminarVendedor,PDO::PARAM_INT);
+		$stmt->bindParam("pregunta",$pregunta,PDO::PARAM_STR);
+		if ($stmt->execute()) {
+			return; 'ok';
+		}else{
+			return "error";
+		}
+		$stmt->close();
+		$stmt=null;
 	}
 }

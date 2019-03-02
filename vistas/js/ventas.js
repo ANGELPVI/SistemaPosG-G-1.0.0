@@ -91,7 +91,7 @@ $("#busquedaProducto").keyup(function(e){
 								if (respuesta[i].stock==="0"){
 									$(".list-group").append('<li class="list-group-item disabled">'+respuesta[i].descripcion+'<span class="badge badge-danger badge-pill">'+respuesta[i].stock+'</span></li>');
 								}else{
-									$(".list-group").append('<a href="#" class="list-group-item list-group-item-action active" data-co="'+respuesta[i].id+'">'+respuesta[i].descripcion+'<span class="badge badge-primary badge-pill">'+respuesta[i].stock+'</span></a>');
+									$(".list-group").append('<a href="#" style="border-top:2px solid #ffffff" class="list-group-item list-group-item-action active" data-co="'+respuesta[i].id+'">'+respuesta[i].descripcion+'<span class="badge badge-primary badge-pill">'+respuesta[i].stock+'</span></a>');
 								}
 
 							}
@@ -130,6 +130,7 @@ $(".list-group").on('click',"a",function(){
 					$("a").remove(".list-group-item-action");
 					$("li").remove(".list-group-item");
 					datos_venta();
+					totalVenta();
 			}
 
 	});
@@ -158,3 +159,80 @@ function datos_venta(){
 	});
 }
 datos_venta();
+
+/*=============================================
+MOSTRAR EL TOTAL DE VENTA
+=============================================*/
+function totalVenta(){
+	var idUsuaVenta=$("#id_usuario_venta").val();
+	var datos=new FormData();
+	datos.append('totalVenta',idUsuaVenta);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: datos,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success:function(resp){
+				$("#totalVenta").html(resp);
+
+			}
+	});
+}
+totalVenta();
+/*=============================================
+ELIMINAR PRODUCTO DEL CARRITO DE COMPRA
+=============================================*/
+$("#productosVentas").on('click','.btn-danger', function(){
+	var pregunta="eliminar";
+	var producto=$(this).attr('data-idProduc');
+	var vendedor=$(this).attr('data-idVendedor');
+
+	var datos=new FormData();
+	datos.append('producto',producto);
+	datos.append('vendedor',vendedor);
+	datos.append('pregunta',pregunta);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: datos,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success:function(resp){
+				datos_venta();
+				totalVenta();
+
+			}
+	});
+
+});
+
+/*=============================================
+AGREGAR PRODUCTO CON EL BOTÓN
+=============================================*/
+$("#productosVentas").on('click','.btn-success', function(){
+	var pregunta="agregar";
+	var producto=$(this).attr('data-agreIdProduc');
+	var vendedor=$(this).attr('data-agreIdVendedor');
+
+	var datos=new FormData();
+	datos.append('producto',producto);
+	datos.append('vendedor',vendedor);
+	datos.append('pregunta',pregunta);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: datos,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success:function(resp){
+				datos_venta();
+				totalVenta();
+
+			}
+	});
+
+});
