@@ -75,7 +75,7 @@ $("#busquedaProducto").keyup(function(e){
 	var buscar=$("#busquedaProducto").val();
 	if (buscar!=""){
 		var codigo=e.which;
-		var letras=String.fromCharCode(codigo);	
+		var letras=String.fromCharCode(codigo);
 		var datos=new FormData();
 		datos.append('letras',letras);
 		$.ajax({
@@ -88,17 +88,73 @@ $("#busquedaProducto").keyup(function(e){
 		      dataType:"json",
 		      success:function(respuesta){
 		      		for(var i in respuesta){
-		      			$(".productos").html(respuesta[i].descripcion);
-		      		}
+								if (respuesta[i].stock==="0"){
+									$(".list-group").append('<li class="list-group-item disabled">'+respuesta[i].descripcion+'<span class="badge badge-danger badge-pill">'+respuesta[i].stock+'</span></li>');
+								}else{
+									$(".list-group").append('<a href="#" class="list-group-item list-group-item-action active" data-co="'+respuesta[i].id+'">'+respuesta[i].descripcion+'<span class="badge badge-primary badge-pill">'+respuesta[i].stock+'</span></a>');
+								}
 
+							}
 		      }
 		});
 
 	}else{
-		$(".productos").html("");
+		$("a").remove(".list-group-item-action");
+		$("li").remove(".list-group-item");
 	}
-	
+
 });
 
 
- 
+/*=============================================
+AGREGAR PRODUCTO AL CARRITO DE COMPRA
+=============================================*/
+$(".list-group").on('click',"a",function(){
+	var id_usua=$("#id_usuario_venta").val();
+	var codigo=$(this).attr('data-co');
+
+	var datos=new FormData();
+	datos.append('codigoProdu', codigo);
+	datos.append('idUsua',id_usua);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: datos,
+			cache: false,
+			contentType: false,
+			processData: false,
+			dataType:"text",
+			success:function(resp){
+					//console.log(resp);
+					$("#busquedaProducto").val('');
+					$("a").remove(".list-group-item-action");
+					$("li").remove(".list-group-item");
+					datos_venta();
+			}
+
+	});
+
+});
+
+
+/*=============================================
+MOSTRAR LOS PRODUCTOS A VENDER
+=============================================*/
+function datos_venta(){
+	var idUsuaVenta=$("#id_usuario_venta").val();
+	var datos=new FormData();
+	datos.append('idUsuaVenta',idUsuaVenta);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: datos,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success:function(resp){
+				$("#productosVentas").html(resp);
+
+			}
+	});
+}
+datos_venta();

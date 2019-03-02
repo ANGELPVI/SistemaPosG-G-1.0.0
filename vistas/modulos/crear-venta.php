@@ -1,19 +1,19 @@
 <div class="content-wrapper">
 
   <section class="content-header">
-    
+
     <h1>
-      
+
       venta
-    
+
     </h1>
 
     <ol class="breadcrumb">
-      
+
       <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
-      
+
       <li class="active">Crear venta</li>
-    
+
     </ol>
 
   </section>
@@ -42,26 +42,18 @@
                 </tr>
               </thead>
 
-              <tbody>
-                <tr>
+              <tbody id="productosVentas">
+                <!-- <tr>
                   <td>1</td>
                   <td>Lapiz del #2</td>
                   <td>$5.00</td>
                   <td>1</td>
                   <td>$5.00</td>
                   <td><div class='btn-group'><button class='btn btn-success'> <i class='fa fa-plus'></i></button><button class='btn btn-danger'><i class='fa fa-times'></i></button></div></td>
-                </tr>
+                </tr> -->
 
-                <tr>
-                  <td>2</td>
-                  <td>Rsistol liquido</td>
-                  <td>$8.00</td>
-                  <td>1</td>
-                  <td>$8.00</td>
-                  <td><div class='btn-group'><button class='btn btn-success'> <i class='fa fa-plus'></i></button><button class='btn btn-danger'><i class='fa fa-times'></i></button></div></td>
-                </tr>
               </tbody>
-              
+
             </table>
           </div>
 
@@ -69,7 +61,7 @@
             <h5><strong>Descuento: %0</strong></h5>
             <h5><strong>Total: $13.00</strong></h5>
           </div>
-          
+
         </div>
       </div>
 
@@ -81,17 +73,25 @@
 
               <div class="form-group">
                   <label for="producto">Código del proucto</label>
-                   <input type="text" class="form-control" name="producto" id="busquedaProducto">
+                   <input type="text" class="form-control" name="producto" >
               </div>
-      
-            <div class="productos"></div>
-            
+
+              <div class="form-group">
+                <label for="">Buscar Producto</label>
+                <input type="text" class="form-control" name="buscarProduct" id="busquedaProducto" placeholder="Eje:0912 o Libreta" required="true">
+              </div>
+
+              <?php echo '<input id="id_usuario_venta"type="hidden" value="'.$_SESSION["id"].'">'; ?>
+
+            <!-- <div class="productos"></div> -->
+            <div class="list-group"></div>
+
           </div>
-          
+
         </div>
-        
+
       </div>
-      
+
     </div>
 
   </section>
@@ -112,7 +112,7 @@ MODAL COPIAS A BLANCO Y NEGRO
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Copias a B/N</h4>
       </div>
-      
+
       <!--=====================================
          CUERPO DELMODAL
        ======================================-->
@@ -130,7 +130,7 @@ MODAL COPIAS A BLANCO Y NEGRO
        ======================================-->
       <div class="modal-footer">
           <button type="button" class="btn btn-defaul pull-left" data-dismiss="modal">Salir</button>
-          <button type="submit" class="btn btn-success" >Ok</button>  
+          <button type="submit" class="btn btn-success" >Ok</button>
       </div>
       </form>
     </div>
@@ -151,7 +151,7 @@ MODAL COPIAS A COLOR
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Copias a Color</h4>
       </div>
-      
+
       <!--=====================================
          CUERPO DELMODAL
        ======================================-->
@@ -168,7 +168,7 @@ MODAL COPIAS A COLOR
               <span class="input-group-addon"><i class="fa fa-usd"></i></span>
               <input type="text" class="form-control" placeholder="Costo Total" autofocus="true" required="true">
             </div>
-          
+
         </div>
       </div>
 
@@ -197,7 +197,7 @@ MODAL IMPRESIÓN BLANCO Y NEGRO
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Impresión B/N</h4>
       </div>
-      
+
       <!--=====================================
          CUERPO DELMODAL
        ======================================-->
@@ -210,7 +210,7 @@ MODAL IMPRESIÓN BLANCO Y NEGRO
             </div>
         </div>
       </div>
-      
+
       <!--=====================================
          FONDO DEL MODAL
        ======================================-->
@@ -224,7 +224,7 @@ MODAL IMPRESIÓN BLANCO Y NEGRO
 </div>
 
 <!--=====================================
-MODAL IMPRESIÓN  A COLOR  
+MODAL IMPRESIÓN  A COLOR
 ======================================-->
 <div class="modal fade" id="modalImpresionColor" role="dialog">
   <div class="modal-dialog">
@@ -236,7 +236,7 @@ MODAL IMPRESIÓN  A COLOR
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Impresión a Color</h4>
       </div>
-      
+
       <!--=====================================
          CUERPO DELMODAL
        ======================================-->
@@ -253,7 +253,7 @@ MODAL IMPRESIÓN  A COLOR
             </div>
         </div>
       </div>
-      
+
       <!--=====================================
          FONDO DEL MODAL
        ======================================-->
@@ -280,7 +280,7 @@ MODAL PARA VENTA DE PRODUCTOS EXTENSOS
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Producto Extenso</h4>
       </div>
-      
+
       <!--=====================================
          CUERPO DELMODAL
        ======================================-->
