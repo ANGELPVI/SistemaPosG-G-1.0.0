@@ -17,6 +17,9 @@ class BuscarProductoVenta{
 	public $eliminarVendedor;
 	public $pregunta;
 
+	public $codigo;
+	public $vendedor;
+
 
 	public function venderProducto(){
 		$valor = $this->codigoProducto;
@@ -95,6 +98,14 @@ class BuscarProductoVenta{
 
 	}
 
+	public function ventaProducto(){
+		$codigo=$this->codigo;
+		$vendedor=$this->vendedor;
+		$agregarProductoPorCodigo=ControlCrearVenta::ctlAgregarProductoPorCodigo($codigo,$vendedor);
+		echo $agregarProductoPorCodigo["msj"];
+
+	}
+
 }
 
 
@@ -144,4 +155,14 @@ if (isset($_POST["producto"])&&isset($_POST["vendedor"])&&isset($_POST["pregunta
 	$eliminarProductoCarrito->eliminarVendedor=$_POST["vendedor"];
 	$eliminarProductoCarrito->pregunta=$_POST["pregunta"];
 	$eliminarProductoCarrito->eliminarProducto();
+}
+
+/*=============================================
+AGREGAR PRODUCTOS POR CÓDIGO DE BARRA
+=============================================*/
+if (isset($_POST["codi"])&&isset($_POST["ven"])) {
+		$agreagarProductoPorCodigo=new BuscarProductoVenta();
+		$agreagarProductoPorCodigo->codigo=$_POST["codi"];
+		$agreagarProductoPorCodigo->vendedor=$_POST["ven"];
+		$agreagarProductoPorCodigo->ventaProducto();
 }

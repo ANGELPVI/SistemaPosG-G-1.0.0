@@ -1,28 +1,4 @@
 /*=============================================
-MOSTRAR LOS PRODUCTOS A VENDER
-=============================================*/
-$(document).ready(function() {
-	var item=1;
-	var datos=new FormData();
-	datos.append('valor',item);
-
-	$.ajax({
-
-	  url: 'ajax/datatable-ventas.ajax.php',
-	  type: 'POST',
-	  data:datos,
-	  cache:'false',
-	  contentType:false,
-	  processData:false,
-	  dataType: 'json',
-	  success: function(respuesta) {
-	  	console.log(respuesta["id_carrito_producto"]);
-	  }
-	});
-
-});
-
-/*=============================================
 MOSTRAR LAS VENTANAS MODALES POR COMBINACIÓN DE TECLAS
 =============================================*/
 document.addEventListener("keydown", function(e){
@@ -235,4 +211,38 @@ $("#productosVentas").on('click','.btn-success', function(){
 			}
 	});
 
+});
+
+/*=============================================
+AGREGAR PRODUCTO POR CODIGO DE BARRA
+=============================================*/
+$("#formCodigo").submit(function(e){
+	var codigo=$("#porCodigo").val();
+	var vendedor=$("#id_usuario_venta").val();
+	var datos=new FormData();
+	datos.append("codi", codigo);
+	datos.append("ven", vendedor);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method:"POST",
+			data:datos,
+			cache:false,
+			contentType:false,
+			processData:false,
+			success:function(resp){
+				if (resp=="ok") {
+					datos_venta();
+					totalVenta();
+					$("#porCodigo").val('');
+				}else{
+					$("#porCodigo").val('');
+					$(".text-danger").removeAttr("style");
+					$(".text-danger").hide(10000);
+
+				}
+
+			}
+
+	});
+e.preventDefault();
 });

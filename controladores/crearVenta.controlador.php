@@ -30,4 +30,10 @@ class ControlCrearVenta{
 		$eliminarProducto=ModeloCrearVenta::mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta);
 		return $eliminarProducto;
 	}
+	// Agregar producto al carrito de compra por lector de barra
+	static public function ctlAgregarProductoPorCodigo($codigo,$vendedor){
+		$agregarProductoCodigo=ModeloCrearVenta::mdlAgregarProductoPorCodigo($codigo,$vendedor);
+		return $agregarProductoCodigo;
+
+	}
 }

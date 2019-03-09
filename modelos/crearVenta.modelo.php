@@ -65,8 +65,8 @@ class ModeloCrearVenta{
 	static public function mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta){
 		$stmt=conexion::conectar()->prepare("CALL elimina_agregar(:produc,:vendedor,:pregunta)");
 		$stmt->bindParam(":produc",$eliminarProducto,PDO::PARAM_INT);
-		$stmt->bindParam("vendedor",$eliminarVendedor,PDO::PARAM_INT);
-		$stmt->bindParam("pregunta",$pregunta,PDO::PARAM_STR);
+		$stmt->bindParam(":vendedor",$eliminarVendedor,PDO::PARAM_INT);
+		$stmt->bindParam(":pregunta",$pregunta,PDO::PARAM_STR);
 		if ($stmt->execute()) {
 			return; 'ok';
 		}else{
@@ -74,5 +74,22 @@ class ModeloCrearVenta{
 		}
 		$stmt->close();
 		$stmt=null;
+	}
+
+	/*=============================================
+	AGREGAR PRODUCTO AL CARRITO POR LECTOR DE BARRA
+	=============================================*/
+	static public function mdlAgregarProductoPorCodigo($codigo,$vendedor){
+		$stmt=Conexion::conectar()->prepare("CALL agregarPorLector(:producto,:vendedor)");
+		$stmt->bindParam(":producto",$codigo,PDO::PARAM_INT);
+		$stmt->bindParam(":vendedor",$vendedor,PDO::PARAM_STR);
+		if ($stmt->execute()) {
+			return $stmt->fetch();
+		}else{
+			return 'Error de conexion con la base de datos, llamar a servicio técnico';
+		}
+		$stmt->close();
+		$stmt=null;
+
 	}
 }

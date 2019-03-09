@@ -61,17 +61,20 @@
           <div class="box-header">Panel De Venta</div>
           <div class="box-body">
 
-              <div class="form-group">
-                  <label for="producto">Código del proucto</label>
-                   <input type="text" class="form-control" name="producto" >
-              </div>
+              <form class="" method="post" id="formCodigo">
+                <div class="form-group">
+                    <label for="producto">Código del proucto</label>
+                     <input type="text" class="form-control" name="producto" id="porCodigo" placeholder="Ejemplo: 1030" pattern="[0-9]*" required="true">
+                     <p class="text-danger" style="display:none;">Error, <strong>el producto está agotado o no exite</strong></p>
+                </div>
+              </form>
 
               <div class="form-group">
                 <label for="">Buscar Producto</label>
-                <input type="text" class="form-control" name="buscarProduct" id="busquedaProducto" placeholder="Eje:0912 o Libreta" required="true">
+                <input type="text" class="form-control" name="buscarProduct" id="busquedaProducto" placeholder="Ejemplo: 0912 o Libreta" required="true">
               </div>
 
-              <?php echo '<input id="id_usuario_venta"type="hidden" value="'.$_SESSION["id"].'">'; ?>
+              <?php echo '<input id="id_usuario_venta" type="hidden" value="'.$_SESSION["id"].'">'; ?>
 
             <!-- <div class="productos"></div> -->
             <div class="list-group"></div>
