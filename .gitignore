@@ -6,3 +6,4 @@ vistas/img
 vistas/plugins
 *.html.php
 .htaccess
+g_g.sql

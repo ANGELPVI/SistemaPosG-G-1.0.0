@@ -47,11 +47,11 @@ class BuscarProductoVenta{
 					<td>'.$row["descripcion"].'</td>
 					<td>$'.$row["precio_venta"].'</td>
 					<td>'.$row["cantidad"].'</td>
-					<td>$'.$row["Total"].'</td>
+					<td>$'.$row["carrito_total"].'</td>
 					<td>
 					<div class="btn-group">
-					<button disabled class="btn btn-success" data-agreIdVendedor="'.$row["id_carrito_vendedor"].'" data-agreIdProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-plus"></i></button>
-					<button class="btn btn-danger" data-idVendedor="'.$row["id_carrito_vendedor"].'" data-idProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-times"></i></button>
+					<button disabled class="btn btn-success" data-agreIdVendedor="'.$row["carrito_vendedor"].'" data-agreIdProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-plus"></i></button>
+					<button class="btn btn-danger" data-idVendedor="'.$row["carrito_vendedor"].'" data-idProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-times"></i></button>
 					</div>
 					</td>
 				</tr>';
@@ -63,11 +63,11 @@ class BuscarProductoVenta{
 					<td>'.$row["descripcion"].'</td>
 					<td>$'.$row["precio_venta"].'</td>
 					<td>'.$row["cantidad"].'</td>
-					<td>$'.$row["Total"].'</td>
+					<td>$'.$row["carrito_total"].'</td>
 					<td>
 					<div class="btn-group">
-					<button class="btn btn-success" data-agreIdVendedor="'.$row["id_carrito_vendedor"].'" data-agreIdProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-plus"></i></button>
-					<button class="btn btn-danger" data-idVendedor="'.$row["id_carrito_vendedor"].'" data-idProduc="'.$row["id_carrito_producto"].'"><i class="fa fa-times"></i></button>
+					<button class="btn btn-success" data-agreIdVendedor="'.$row["carrito_vendedor"].'" data-agreIdProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-plus"></i></button>
+					<button class="btn btn-danger" data-idVendedor="'.$row["carrito_vendedor"].'" data-idProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-times"></i></button>
 					</div>
 					</td>
 				</tr>';
@@ -83,7 +83,7 @@ class BuscarProductoVenta{
 		$totalVenta=$this->totalVenta;
 		 $mostraProductos=ControlCrearVenta::ctlmostrarProductos($totalVenta);
 		while ($row=$mostraProductos->fetch(PDO::FETCH_ASSOC)){
-					$sumaTotalVenta+=$row["Total"];
+					$sumaTotalVenta+=$row["carrito_total"];
 		}
 		echo '<strong>Total: $'.$sumaTotalVenta.'</strong>';
 

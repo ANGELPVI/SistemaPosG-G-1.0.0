@@ -50,7 +50,7 @@ class ModeloClientes{
 
 		}else{
 
-			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.estado,c.fecha FROM $tabla c");
+			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.fecha FROM $tabla c");
 
 			$stmt -> execute();
 
