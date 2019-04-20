@@ -20,6 +20,10 @@ class BuscarProductoVenta{
 	public $codigo;
 	public $vendedor;
 
+	public $concretarVen;
+
+	public $cV;
+	public $coleccion;
 
 	public function venderProducto(){
 		$valor = $this->codigoProducto;
@@ -85,7 +89,7 @@ class BuscarProductoVenta{
 		while ($row=$mostraProductos->fetch(PDO::FETCH_ASSOC)){
 					$sumaTotalVenta+=$row["carrito_total"];
 		}
-		echo '<strong>Total: $'.$sumaTotalVenta.'</strong>';
+		echo '<strong>Total: $<span id="totalV">'.$sumaTotalVenta.'</span></strong>';
 
 	}
 
@@ -104,6 +108,19 @@ class BuscarProductoVenta{
 		$agregarProductoPorCodigo=ControlCrearVenta::ctlAgregarProductoPorCodigo($codigo,$vendedor);
 		echo $agregarProductoPorCodigo["msj"];
 
+	}
+
+	public function concretarVenta(){
+		$idU=$this->concretarVen;
+		$terminarVenta=ControlCrearVenta::ctlColeccion($idU);
+		echo json_encode($terminarVenta);
+	}
+
+	public function finDeVenta(){
+		$cV=$this->cV;
+		$coleccion=$this->coleccion;
+		$finalizarVenta=ControlCrearVenta::ctlFinalizarVenta($cV,$coleccion);
+		echo $finalizarVenta["msj"];
 	}
 
 }
@@ -165,4 +182,23 @@ if (isset($_POST["codi"])&&isset($_POST["ven"])) {
 		$agreagarProductoPorCodigo->codigo=$_POST["codi"];
 		$agreagarProductoPorCodigo->vendedor=$_POST["ven"];
 		$agreagarProductoPorCodigo->ventaProducto();
+}
+
+/*=============================================
+COLECCION DE CONCRETAR VENTA
+=============================================*/
+if (isset($_POST["concretarVendedor"])) {
+$terminarLaVenta=new BuscarProductoVenta();
+$terminarLaVenta->concretarVen=$_POST["concretarVendedor"];
+$terminarLaVenta->concretarVenta();
+}
+
+/*=============================================
+CONCRETAR VENTA
+=============================================*/
+if (isset($_POST["cV"])&&isset($_POST["coleccion"])){
+	$finalizarVenta=new BuscarProductoVenta();
+	$finalizarVenta->cV=$_POST["cV"];
+	$finalizarVenta->coleccion=$_POST["coleccion"];
+	$finalizarVenta->finDeVenta();
 }

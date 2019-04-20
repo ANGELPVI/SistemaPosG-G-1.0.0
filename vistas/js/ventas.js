@@ -246,3 +246,99 @@ $("#formCodigo").submit(function(e){
 	});
 e.preventDefault();
 });
+
+
+/*=============================================
+CONCRETAR VENTA
+=============================================*/
+document.addEventListener("keydown", function(e){
+	var vendedor=$("#id_usuario_venta").val();
+	var productos='';
+	var datos=new FormData();
+	datos.append("concretarVendedor",vendedor);
+	if ((e.which===120)) {
+		$("#cobrarVenta").val('');
+		$("#porCodigo").val('')
+		$("#busquedaProducto").val('');
+		$("#cambio").text("Cambio:");
+		$("#cobrarVenta").attr('disabled',"true");
+		$("#porCodigo").attr('disabled',"true");
+		$("#busquedaProducto").attr('disabled','true');
+		$.ajax({
+				url:"ajax/crearVenta.ajax.php",
+				method:"POST",
+				data:datos,
+				cache:false,
+				contentType:false,
+				processData:false,
+				dataType:"json",
+				success:function(resp){
+					// Otro ajax para insertar
+					productos=JSON.stringify(resp);
+					var datosV=new FormData();
+					datosV.append("cV",vendedor);
+					datosV.append("coleccion",productos);
+					$.ajax({
+						url:"ajax/crearVenta.ajax.php",
+						method:"POST",
+						data:datosV,
+						cache:false,
+						contentType:false,
+						processData:false,
+						success:function(respuestas){
+								if (respuestas==="ok") {
+									$(".progress").show();
+									$(".progress-bar").css("transition","all 2s ease .8s");
+									$(".progress-bar").css("width","100%");
+										setTimeout(function(){
+											$(".progress").hide();
+											datos_venta();
+											totalVenta();
+											$(".progress-bar").css("width","0%");
+											$("#cobrarVenta").removeAttr("disabled");
+											$("#porCodigo").removeAttr("disabled");
+											$("#busquedaProducto").removeAttr("disabled");
+										}, 5000);
+								}else{
+									$(".alert").show();
+									$(".alert").hide(20000);
+									$("#cobrarVenta").removeAttr("disabled");
+									$("#porCodigo").removeAttr("disabled");
+									$("#busquedaProducto").removeAttr("disabled");
+
+								}
+						}
+
+					});
+					// -------------------
+				}
+		});
+	}
+});
+
+
+/*=============================================
+OPERACIONES DE COBRO Y CAMBIO DE LA VENTA
+=============================================*/
+$("#cobrarVenta").change(function(){
+	var cobrar=$("#cobrarVenta").val();
+	var total=$("#totalV").text();
+		if (/^([0-9])*$/.test(cobrar)){
+				var resta=0;
+				var resta=parseInt(resta);
+				var totalV=parseInt(total);
+				var cobrar=parseInt(cobrar);
+				if (cobrar>=totalV) {
+					resta=cobrar-totalV;
+					$("#cambio").text("Cambio: $"+resta);
+				}else{
+					console.log("Es mallor lo que estas vendiendo");
+				}
+
+
+		}else{
+			console.log("no son números");
+		}
+
+
+});

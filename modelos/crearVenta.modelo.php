@@ -92,4 +92,36 @@ class ModeloCrearVenta{
 		$stmt=null;
 
 	}
+
+	/*=============================================
+	Coleccion de datos concretarVenta
+	=============================================*/
+	static public function mdlColeccion($idUsua){
+		$stmt=Conexion::conectar()->prepare("CALL coleccionDeVenta(:idU)");
+		$stmt->bindParam(":idU",$idUsua,PDO::PARAM_INT);
+			 if ($stmt->execute()) {
+			 	return $stmt->fetchAll();
+			}else{
+				return "Error de consulta";
+			}
+			$stmt->close();
+			$stmt=null;
+	}
+
+	/*=============================================
+	Finalizar la venta
+	=============================================*/
+	static public function mdlFinalizarVenta($idVendedor,$produc){
+		$stmt=Conexion::conectar()->prepare("CALL ConcretarVenta(:idVendedor,:productos)");
+		$stmt->bindParam(":idVendedor",$idVendedor,PDO::PARAM_INT);
+		$stmt->bindParam(":productos",$produc,PDO::PARAM_STR);
+		if ($stmt->execute()){
+					return $stmt->fetch();
+		}else{
+			return "Error de conexion, consulte a soporte tecnico";
+		}
+		$stmt->close();
+		$stmt=null;
+
+	}
 }

@@ -36,4 +36,16 @@ class ControlCrearVenta{
 		return $agregarProductoCodigo;
 
 	}
+
+	//COLECCION DE CONCRETAR VENTA
+	static public function ctlColeccion($idU){
+		$mostrarProduc=ModeloCrearVenta::mdlColeccion($idU);
+		return $mostrarProduc;
+	}
+
+	//FINALIZAR LA VENTA DE Productos
+	static public function ctlFinalizarVenta($idVendedor,$produc){
+		$finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($idVendedor,$produc);
+		return $finalizarVenta;
+	}
 }

@@ -50,8 +50,19 @@
           <div class="box-footer">
             <!-- <h5><strong>Descuento: %0</strong></h5> -->
             <h4 id="totalVenta"></h4>
+            <h4><strong id="cambio">Cambio:</strong></h4>
+          </div>
+          <!-- Barra de progreso de la venta -->
+          <div class="progress" style="display: none;">
+            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+              <span class="sr-only">40% Complete (success)</span>
+            </div>
           </div>
 
+          <!-- Alerta de error de venta -->
+          <div class="alert alert-danger" role="alert" style="display:none;">
+              <strong>Error!</strong> no está registrando productos para vender o fallaron las conexiones del sistema.
+          </div>
         </div>
       </div>
 
@@ -68,6 +79,11 @@
                      <p class="text-danger" style="display:none;">Error, <strong>el producto está agotado o no exite</strong></p>
                 </div>
               </form>
+                <!-- Input de entraca para cobrar la venta -->
+              <div class="form-group">
+                   <label for="producto">Cobrar Venta</label>
+                   <input type="text" class="form-control" name="producto" id="cobrarVenta" placeholder="Ejemplo: $100" pattern="[0-9]*" required="true">
+              </div>
 
               <div class="form-group">
                 <label for="">Buscar Producto</label>
