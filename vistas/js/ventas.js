@@ -2,47 +2,105 @@
 MOSTRAR LAS VENTANAS MODALES POR COMBINACIÓN DE TECLAS
 =============================================*/
 document.addEventListener("keydown", function(e){
-	 if (e.ctrlKey && (e.which===66)){
-		$("#modalCopiasBN").modal("toggle");
-	 }else if (e.ctrlKey && (e.which===67)){
-	 	$("#modalCopiasColor").modal("toggle");
-	 }else if (e.ctrlKey && (e.which===112)){
-	 	$("#modalImpresionBN").modal("toggle");
-	 }else if(e.ctrlKey && (e.which===113)){
-	 	$("#modalImpresionColor").modal("toggle");
-	 }else if (e.ctrlKey && (e.which===114)) {
-	 	$("#modalProductoExtenso").modal("toggle");
-	 }
+		 if (e.ctrlKey && (e.which===112)){
+			$("#modalCopiasBN").modal("toggle");
+		}
 });
 
 /*=============================================
-VALIDAR EL FORMULARIO DE COPIAS BLANCO Y NEGRO
+VENTA POR MAYOREO
 =============================================*/
 $("#formCopiasBN").submit(function(e){
-	console.log("hola");
+	var codigoMayoreo=$("#producto").val();
+	var id_usua=$("#id_usuario_venta").val();
+	var cantidad=$("#inputCantidad").val();
+	var total=$("#inputTotal").val();
+	var datos=new FormData();
+	datos.append('codigoProduMayoreo',codigoMayoreo);
+	datos.append('idUsuaMayoreo',id_usua);
+	datos.append('cantidad',cantidad);
+	datos.append('total',total);
+
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: datos,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success:function(resp){
+					if (resp==="ok"){
+						$("#producto").val('');
+						$("#inputCantidad").val('');
+						$("#inputTotal").val('');
+						$(".alertaMayoreo").css("displey","none");
+						datos_venta();
+						totalVenta();
+					}else if(resp==="insuficiente"){
+					$("#producto").val('');
+					$("#inputCantidad").val('');
+					$("#inputTotal").val('');
+					$(".alertaMayoreo").show(1000);
+				}
+		}
+	});
+
 	e.preventDefault();
 });
-
-$("#formCopiasColor").submit(function(e){
-	console.log("Hola del formulario copias color");
-	e.preventDefault();
+/*=============================================
+QUITAR ALERTA DE ERROR EN VENTA POR MAYOREO
+=============================================*/
+$("#producto").change(function(){
+	$(".alertaMayoreo").hide(1000);
+	$(".alerDeseleccion").hide(1000);
 });
 
-$("#formImprecionBN").submit(function(e){
-	console.log("Hola del formulario imprecion B/N");
-	e.preventDefault();
-});
+/*=============================================
+SACAR EL TOTAL A PAGAR POR PRODUCTO POR MAYOREO
+=============================================*/
+$("#inputCantidad").change(function(){
+	var multipicar=0;
+	var producto=$("#producto").val();
+	var cantidadMayoreo=$("#inputCantidad").val();
+	var total=$("#inputTotal").val('');
+	var dato=new FormData();
+	dato.append('mayoreoProducto',producto);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method: "POST",
+			data: dato,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success:function(resp){
+				if (cantidadMayoreo!=""&&/^([0-9])*$/.test(cantidadMayoreo)&&producto!=null){
+					if (producto==1000&&cantidadMayoreo>=10) {
+						multipicar=parseFloat(cantidadMayoreo)*0.75;
+						$("#inputTotal").val(Math.round(multipicar));
+					}else{
+						multipicar=parseFloat(cantidadMayoreo)*parseFloat(resp);
+						$("#inputTotal").val(Math.round(multipicar));
+					}
 
-$("#formImprecionColor").submit(function(e){
-	console.log("Hola del formulario imprecion color");
-	e.preventDefault();
-});
+				}else{
+					$("#inputCantidad").val('');
+					$("#inputTotal").val('');
+					$(".alerDeseleccion").show(1000);
+				}
 
-$("#formProductoExtenso").submit(function(e){
-	console.log("Hola del formulario producto extenso");
-	e.preventDefault();
+			}
+	});
 });
-
+/*=============================================
+RESETIAR EL FORMULARIO DE VENTA POR MAYOREO
+=============================================*/
+$(".btn-defaul").click(function(){
+	$("#producto").val('');
+	$("#inputCantidad").val('');
+	$("#inputTotal").val('');
+	$(".alertaMayoreo").hide();
+	$(".alerDeseleccion").hide();
+});
 
 /*=============================================
 BUSCAR PRODUCTO POR NOMBRE O CODIGO CON EL PANEL DE CONTROL
@@ -130,7 +188,6 @@ function datos_venta(){
 			processData: false,
 			success:function(resp){
 				$("#productosVentas").html(resp);
-
 			}
 	});
 }
@@ -160,7 +217,7 @@ totalVenta();
 /*=============================================
 ELIMINAR PRODUCTO DEL CARRITO DE COMPRA
 =============================================*/
-$("#productosVentas").on('click','.btn-danger', function(){
+$("#productosVentas").on('click','.btn-warning', function(){
 	var pregunta="eliminar";
 	var producto=$(this).attr('data-idProduc');
 	var vendedor=$(this).attr('data-idVendedor');
@@ -184,6 +241,35 @@ $("#productosVentas").on('click','.btn-danger', function(){
 	});
 
 });
+/*=============================================
+ELIMINAR PRODUCTO DEL CARRITO DE COMPRA POR MAYOREO
+=============================================*/
+$("#productosVentas").on('click','.btn-danger', function(){
+	var vendedor=$(this).attr('data-vendedor');
+	var producto=$(this).attr('data-producto');
+	var cantidad=$(this).attr('data-cantidad');
+	datos=new FormData();
+	datos.append('eliminarVendedorMayoreo',vendedor);
+	datos.append('eliminarProductoMayoreo',producto);
+	datos.append('eliminarCantidadMayoreo',cantidad);
+	$.ajax({
+			url:"ajax/crearVenta.ajax.php",
+			method:"POST",
+			data:datos,
+			cache:false,
+			contentType:false,
+			processData:false,
+			dataType:'text',
+			success:function(resp){
+				console.log(resp);
+				datos_venta();
+				totalVenta();
+			}
+	});
+
+
+
+})
 
 /*=============================================
 AGREGAR PRODUCTO CON EL BOTÓN
@@ -253,67 +339,81 @@ CONCRETAR VENTA
 =============================================*/
 document.addEventListener("keydown", function(e){
 	var vendedor=$("#id_usuario_venta").val();
+	var cobrar=$("#cobrarVenta").val();
 	var productos='';
 	var datos=new FormData();
 	datos.append("concretarVendedor",vendedor);
-	if ((e.which===120)) {
-		$("#cobrarVenta").val('');
-		$("#porCodigo").val('')
-		$("#busquedaProducto").val('');
-		$("#cambio").text("Cambio:");
-		$("#cobrarVenta").attr('disabled',"true");
-		$("#porCodigo").attr('disabled',"true");
-		$("#busquedaProducto").attr('disabled','true');
-		$.ajax({
-				url:"ajax/crearVenta.ajax.php",
-				method:"POST",
-				data:datos,
-				cache:false,
-				contentType:false,
-				processData:false,
-				dataType:"json",
-				success:function(resp){
-					// Otro ajax para insertar
-					productos=JSON.stringify(resp);
-					var datosV=new FormData();
-					datosV.append("cV",vendedor);
-					datosV.append("coleccion",productos);
-					$.ajax({
-						url:"ajax/crearVenta.ajax.php",
-						method:"POST",
-						data:datosV,
-						cache:false,
-						contentType:false,
-						processData:false,
-						success:function(respuestas){
-								if (respuestas==="ok") {
-									$(".progress").show();
-									$(".progress-bar").css("transition","all 2s ease .8s");
-									$(".progress-bar").css("width","100%");
-										setTimeout(function(){
-											$(".progress").hide();
-											datos_venta();
-											totalVenta();
-											$(".progress-bar").css("width","0%");
-											$("#cobrarVenta").removeAttr("disabled");
-											$("#porCodigo").removeAttr("disabled");
-											$("#busquedaProducto").removeAttr("disabled");
-										}, 5000);
-								}else{
-									$(".alert").show();
-									$(".alert").hide(20000);
-									$("#cobrarVenta").removeAttr("disabled");
-									$("#porCodigo").removeAttr("disabled");
-									$("#busquedaProducto").removeAttr("disabled");
+	if ((e.which===120)){
+		if (cobrar!=""&&/^([0-9])*$/.test(cobrar)){
+			$("#cobrarVenta").val('');
+			$("#porCodigo").val('')
+			$("#busquedaProducto").val('');
+			$("#cambio").text("Cambio:");
+			$("#cobrarVenta").attr('disabled',"true");
+			$("#porCodigo").attr('disabled',"true");
+			$("#busquedaProducto").attr('disabled','true');
+			$.ajax({
+			    url:"ajax/crearVenta.ajax.php",
+			    method:"POST",
+			    data:datos,
+			    cache:false,
+			    contentType:false,
+			    processData:false,
+			    dataType:"json",
+			    success:function(resp){
+			      // Otro ajax para insertar
+			      productos=JSON.stringify(resp);
+			      var datosV=new FormData();
+			      datosV.append("cV",vendedor);
+			      datosV.append("coleccion",productos);
+			      $.ajax({
+			        url:"ajax/crearVenta.ajax.php",
+			        method:"POST",
+			        data:datosV,
+			        cache:false,
+			        contentType:false,
+			        processData:false,
+			        success:function(respuestas){
+			            if (respuestas==="ok") {
+			              $(".progress").show();
+			              $(".progress-bar").css("transition","all 2s ease .5s");
+			              $(".progress-bar").css("width","100%");
+			                setTimeout(function(){
+			                  $(".progress").hide();
+			                  datos_venta();
+			                  totalVenta();
+			                  $(".progress-bar").css("width","0%");
+			                  $("#cobrarVenta").removeAttr("disabled");
+			                  $("#porCodigo").removeAttr("disabled");
+			                  $("#busquedaProducto").removeAttr("disabled");
+			                }, 3000);
+			            }else{
+			              $(".alert").show(1000);
+			              $("#cobrarVenta").removeAttr("disabled");
+			              $("#porCodigo").removeAttr("disabled");
+			              $("#busquedaProducto").removeAttr("disabled");
 
-								}
-						}
+			            }
+			        }
 
-					});
-					// -------------------
-				}
-		});
+			      });
+			      // -------------------
+			    }
+			});
+
+		}else{
+				$(".alert").show(1000);
+				$("#cobrarVenta").css("border","solid 1px red");
+
+		}
 	}
+});
+/*=============================================
+QUITAR ERROR POR NO REGUISTRAR PRODUCTOS
+=============================================*/
+$(".alert-danger").click(function(){
+	$(".alert-danger").hide(1000);
+	 $("#cobrarVenta").removeAttr("style");
 });
 
 
@@ -323,21 +423,20 @@ OPERACIONES DE COBRO Y CAMBIO DE LA VENTA
 $("#cobrarVenta").change(function(){
 	var cobrar=$("#cobrarVenta").val();
 	var total=$("#totalV").text();
-		if (/^([0-9])*$/.test(cobrar)){
+		if (/^([0-9])*$/.test(cobrar)&&cobrar!=""){
 				var resta=0;
 				var resta=parseInt(resta);
 				var totalV=parseInt(total);
 				var cobrar=parseInt(cobrar);
-				if (cobrar>=totalV) {
+				if (cobrar>=totalV){
 					resta=cobrar-totalV;
 					$("#cambio").text("Cambio: $"+resta);
 				}else{
 					console.log("Es mallor lo que estas vendiendo");
 				}
 
-
 		}else{
-			console.log("no son números");
+		$("#cambio").text("Cambio:");
 		}
 
 

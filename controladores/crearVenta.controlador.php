@@ -48,4 +48,26 @@ class ControlCrearVenta{
 		$finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($idVendedor,$produc);
 		return $finalizarVenta;
 	}
+	//Vender productos por mayoreo
+	static public function ctlVentaPorMayoreo(){
+		$verProductoMayoreo=ModeloCrearVenta:: mdlVentaPorMayoreo();
+		return $verProductoMayoreo;
+	}
+	//Sacar total por mayoreo de los productos
+	static public function ctlmayoreoProducto($idPro){
+		$mayoreoVenta=ModeloCrearVenta::mdlMayoreoVenta($idPro);
+		return $mayoreoVenta;
+	}
+	// agregar al carrito de compra por mayoreo
+	static public function ctlVentaM($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo){
+		$ventaMayor=ModeloCrearVenta::mdlVentaMayor($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo);
+		return $ventaMayor;
+
+	}
+	// Eliminar productos del carrito de compra por mayoreo
+	static public function ctlEliminarMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo){
+		$eliminarMayoreo=ModeloCrearVenta::mdlEliminarProductoMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo);
+		return $eliminarMayoreo;
+
+	}
 }

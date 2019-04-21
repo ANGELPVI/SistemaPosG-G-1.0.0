@@ -61,7 +61,7 @@
 
           <!-- Alerta de error de venta -->
           <div class="alert alert-danger" role="alert" style="display:none;">
-              <strong>Error!</strong> no está registrando productos para vender o fallaron las conexiones del sistema.
+              <strong>Error!</strong> no está registrando productos para vender o no está cobrando la venta.
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
 
 
 <!--=====================================
-MODAL COPIAS A BLANCO Y NEGRO
+MODAL VERDER POR MAYOREO
 ======================================-->
 <div class="modal fade" id="modalCopiasBN" role="dialog">
   <div class="modal-dialog">
@@ -117,9 +117,9 @@ MODAL COPIAS A BLANCO Y NEGRO
       <!--=====================================
          ENCABEZADO DEL MODAL
        ======================================-->
-      <div class="modal-header" style="background:#33313b; color:#fff">
+      <div class="modal-header" style="background:#080808; color:#ffffff">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Copias a B/N</h4>
+        <h4 class="modal-title">Venta Por Mayoreo</h4>
       </div>
 
       <!--=====================================
@@ -128,11 +128,35 @@ MODAL COPIAS A BLANCO Y NEGRO
       <div class="modal-body">
         <div class="form-group">
           <form method="post" id="formCopiasBN">
+
+
+               <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-th"></i></span>
+                  <select class="form-control input-lg" name="copiasImpresion" required id="producto">
+                     <option value="" selected disabled>Selecionar Producto</option>
+                     <?php
+                     $productoMayoreo = ControlCrearVenta::ctlVentaPorMayoreo();
+                     foreach ($productoMayoreo as $key => $value) {
+                        echo '<option value="'.$value["codigo"].'">'.$value["descripcion"].'</option>';
+                     }
+                     ?>
+                  </select>
+               </div><br>
+
+
             <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-              <input type="text" class="form-control" placeholder="Código De Producto" autofocus="true" required="true">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-shopping-cart"></i></span>
+              <input id="inputCantidad" type="text" class="form-control" placeholder="Cantidad" autofocus="true" required="true" pattern="[0-9]*">
+            </div><br>
+
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-money"></i></span>
+              <input id="inputTotal" type="text" class="form-control" placeholder="Total" autofocus="true" required="true" pattern="[0-9]*">
             </div>
+
         </div>
+        <div class="alert alert-danger alertaMayoreo" role="alert" style="display:none"><strong>Error!</strong> no hay suficiente stock para concretar la venta.</div>
+        <div class="alert alert-danger alerDeseleccion" role="alert" style="display:none"><strong>Error!</strong> verifique que esté seleccionando un producto.</div>
       </div>
       <!--=====================================
          FONDO DEL MODAL
@@ -140,180 +164,6 @@ MODAL COPIAS A BLANCO Y NEGRO
       <div class="modal-footer">
           <button type="button" class="btn btn-defaul pull-left" data-dismiss="modal">Salir</button>
           <button type="submit" class="btn btn-success" >Ok</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-<!--=====================================
-MODAL COPIAS A COLOR
-======================================-->
-<div class="modal fade" id="modalCopiasColor" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!--=====================================
-         ENCABEZADO DEL MODAL
-       ======================================-->
-      <div class="modal-header" style="background:blue; color:#fff">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Copias a Color</h4>
-      </div>
-
-      <!--=====================================
-         CUERPO DELMODAL
-       ======================================-->
-      <div class="modal-body">
-        <div class="form-group">
-          <form method="post" id="formCopiasColor">
-
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-              <input type="text" class="form-control" placeholder="Código De Producto" autofocus="true" required="true">
-            </div>
-
-            <div class="input-group" style="margin-top: 1em">
-              <span class="input-group-addon"><i class="fa fa-usd"></i></span>
-              <input type="text" class="form-control" placeholder="Costo Total" autofocus="true" required="true">
-            </div>
-
-        </div>
-      </div>
-
-      <!--=====================================
-         FONDO DEL MODAL
-       ======================================-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-defaul pull-left" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-success">Ok</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!--=====================================
-MODAL IMPRESIÓN BLANCO Y NEGRO
-======================================-->
-<div class="modal fade" id="modalImpresionBN" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!--=====================================
-         ENCABEZADO DEL MODAL
-       ======================================-->
-      <div class="modal-header" style="background:#ff0000; color:#fff">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Impresión B/N</h4>
-      </div>
-
-      <!--=====================================
-         CUERPO DELMODAL
-       ======================================-->
-      <div class="modal-body">
-        <div class="form-group">
-          <form method="post" id="formImprecionBN">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-              <input type="text" class="form-control" placeholder="Código De Producto" autofocus="true" required="true">
-            </div>
-        </div>
-      </div>
-
-      <!--=====================================
-         FONDO DEL MODAL
-       ======================================-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-defaul pull-left" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-success">Ok</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!--=====================================
-MODAL IMPRESIÓN  A COLOR
-======================================-->
-<div class="modal fade" id="modalImpresionColor" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!--=====================================
-         ENCABEZADO DEL MODAL
-       ======================================-->
-      <div class="modal-header" style="background:#7d7d7d; color:#fff">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Impresión a Color</h4>
-      </div>
-
-      <!--=====================================
-         CUERPO DELMODAL
-       ======================================-->
-      <div class="modal-body">
-        <div class="form-group">
-          <form method="post" id="formImprecionColor">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-              <input type="text" name="impreColor" class="form-control" placeholder="Código De Producto" autofocus="true" required="true">
-            </div>
-            <div class="input-group" style="margin-top: 1em">
-                <span class="input-group-addon"><i class="fa fa-usd"></i></span>
-                <input type="text" name="impresionColorPrecio" class="form-control" placeholder="Costo Total" autofocus="true" required="true">
-            </div>
-        </div>
-      </div>
-
-      <!--=====================================
-         FONDO DEL MODAL
-       ======================================-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-defaul pull-left" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-success">Ok</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-<!--=====================================
-MODAL PARA VENTA DE PRODUCTOS EXTENSOS
-======================================-->
-<div class="modal fade" id="modalProductoExtenso" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!--=====================================
-         ENCABEZADO DEL MODAL
-       ======================================-->
-      <div class="modal-header" style="background:#fdb44b; color:#fff">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Producto Extenso</h4>
-      </div>
-
-      <!--=====================================
-         CUERPO DELMODAL
-       ======================================-->
-      <div class="modal-body">
-        <div class="form-group">
-          <form method="post" id="formProductoExtenso">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-              <input type="text" name="codigoProducto" class="form-control" placeholder="Código De Producto" autofocus="true" required="true">
-            </div>
-            <div class="input-group" style="margin-top: 1em">
-                <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-                <input type="text" name="totalCantidad" class="form-control" placeholder="Cantidad Total de Producto" autofocus="true" required="true">
-            </div>
-        </div>
-      </div>
-
-      <h3 style="margin: 1em">Total:$</h3>
-      <!--=====================================
-         FONDO DEL MODAL
-       ======================================-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-defaul pull-left" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-success">Ok</button>
       </div>
       </form>
     </div>

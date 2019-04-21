@@ -68,7 +68,7 @@ MODAL AGREGAR PRODUCTO
                         <span class="input-group-addon"><i class="fa fa-cubes"></i></span>
                         <select class="form-control input-lg" name="nuevoProveedor" required>
                            <option value="" selected disabled>Selecionar Proveedor</option>
-                          
+
                         </select>
                      </div>
                   </div> -->

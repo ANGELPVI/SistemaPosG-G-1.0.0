@@ -124,4 +124,65 @@ class ModeloCrearVenta{
 		$stmt=null;
 
 	}
+
+	/*=============================================
+	Sacar las copias e impresiones para veder por mayoreo
+	=============================================*/
+	static public function mdlVentaPorMayoreo(){
+		$stmt=Conexion::conectar()->prepare("SELECT * FROM productos");
+		if ($stmt->execute()){
+					return $stmt->fetchAll();
+		}else{
+			return "Error de conexion, consulte a soporte tecnico";
+		}
+		$stmt->close();
+		$stmt=null;
+	}
+	/*=============================================
+	Sacar el total por mayoreo de productos
+	=============================================*/
+	static public function mdlMayoreoVenta($idPro){
+		$stmt=Conexion::conectar()->prepare("SELECT precio_venta FROM productos WHERE codigo=:producto");
+		$stmt->bindParam(":producto",$idPro,PDO::PARAM_INT);
+		if ($stmt->execute()){
+					return $stmt->fetch();
+		}else{
+			return "Error de conexion, consulte a soporte tecnico";
+		}
+		$stmt->close();
+		$stmt=null;
+	}
+	/*=============================================
+	Agregar al carrito venta por mayoreo
+	=============================================*/
+	static public function mdlVentaMayor($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo){
+		$stmt=Conexion::conectar()->prepare("CALL ventaPorMayoreo(:producto,:cantidad,:total,:vendedor)");
+		$stmt->bindParam(":producto",$codigoProduMayoreo,PDO::PARAM_STR);
+		$stmt->bindParam(":cantidad",$cantidad,PDO::PARAM_INT);
+		$stmt->bindParam(":total",$total,PDO::PARAM_INT);
+		$stmt->bindParam(":vendedor",$idUsuaMayoreo,PDO::PARAM_INT);
+		if ($stmt->execute()){
+					return $stmt->fetch();
+		}else{
+			return "Error de conexion, consulte a soporte tecnico";
+		}
+		$stmt->close();
+		$stmt=null;
+	}
+	/*=============================================
+	ELIMINAR PRODUCTOS DEL CARRITO POR MAYOREO
+	=============================================*/
+	static public function mdlEliminarProductoMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo){
+	$stmt=Conexion::conectar()->prepare("CALL eliminatPorMayoreo(:producto,:vendedor,:cantidad)");
+		$stmt->bindParam(":producto",$eliminarProductoMayoreo,PDO::PARAM_STR);
+	$stmt->bindParam(":vendedor",$eliminarVendedorMayoreo,PDO::PARAM_INT);
+	$stmt->bindParam(":cantidad",$eliminarCantidadMayoreo,PDO::PARAM_INT);
+	if ($stmt->execute()){
+				return $stmt->fetch();
+	}else{
+		return "Error de conexion, consulte a soporte tecnico";
+	}
+	$stmt->close();
+	$stmt=null;
+}
 }

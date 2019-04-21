@@ -25,6 +25,17 @@ class BuscarProductoVenta{
 	public $cV;
 	public $coleccion;
 
+	public $mayoreoProduc;
+
+	public $codigoProduMayoreo;
+	public $idUsuaMayoreo;
+	public $cantidad;
+	public $total;
+
+	public $eliminarVendedorMayoreo;
+	public $eliminarProductoMayoreo;
+	public $eliminarCantidadMayoreo;
+
 	public function venderProducto(){
 		$valor = $this->codigoProducto;
 		$p=ControlCrearVenta::ctlBuscarProducto($valor);
@@ -55,7 +66,8 @@ class BuscarProductoVenta{
 					<td>
 					<div class="btn-group">
 					<button disabled class="btn btn-success" data-agreIdVendedor="'.$row["carrito_vendedor"].'" data-agreIdProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-plus"></i></button>
-					<button class="btn btn-danger" data-idVendedor="'.$row["carrito_vendedor"].'" data-idProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-times"></i></button>
+					<button class="btn btn-warning" data-idVendedor="'.$row["carrito_vendedor"].'" data-idProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-minus"></i></button>
+					<button class="btn btn-danger" data-cantidad="'.$row["cantidad"].'" data-vendedor="'.$row["carrito_vendedor"].'" data-producto="'.$row["codigo"].'"><i class="fa fa-trash-o"></i></button>
 					</div>
 					</td>
 				</tr>';
@@ -71,7 +83,8 @@ class BuscarProductoVenta{
 					<td>
 					<div class="btn-group">
 					<button class="btn btn-success" data-agreIdVendedor="'.$row["carrito_vendedor"].'" data-agreIdProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-plus"></i></button>
-					<button class="btn btn-danger" data-idVendedor="'.$row["carrito_vendedor"].'" data-idProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-times"></i></button>
+					<button class="btn btn-warning" data-idVendedor="'.$row["carrito_vendedor"].'" data-idProduc="'.$row["carrito_id_producto"].'"><i class="fa fa-minus"></i></button>
+					<button class="btn btn-danger" data-cantidad="'.$row["cantidad"].'" data-vendedor="'.$row["carrito_vendedor"].'" data-producto="'.$row["codigo"].'"><i class="fa fa-trash-o"></i></button>
 					</div>
 					</td>
 				</tr>';
@@ -121,6 +134,31 @@ class BuscarProductoVenta{
 		$coleccion=$this->coleccion;
 		$finalizarVenta=ControlCrearVenta::ctlFinalizarVenta($cV,$coleccion);
 		echo $finalizarVenta["msj"];
+	}
+
+	public function totalPorMayoreo(){
+		$mayoreoProduc=$this->mayoreoProduc;
+		$mayoreoProducto=ControlCrearVenta::ctlmayoreoProducto($mayoreoProduc);
+		echo $mayoreoProducto["precio_venta"];
+	}
+
+	public function FunctionName(){
+		$codigoProduMayoreo=$this->codigoProduMayoreo;
+		$idUsuaMayoreo=$this->idUsuaMayoreo;
+		$cantidad=$this->cantidad;
+		$total=$this->total;
+
+		$ventaM=ControlCrearVenta::ctlVentaM($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo);
+		echo $ventaM["msj"];
+	}
+
+	public function eliminarCarritoProductoMayoreo(){
+		$eliminarVendedorMayoreo=$this->eliminarVendedorMayoreo;
+		$eliminarProductoMayoreo=$this->eliminarProductoMayoreo;
+		$eliminarCantidadMayoreo=$this->eliminarCantidadMayoreo;
+		$repustaEliminarMayoreo=ControlCrearVenta::ctlEliminarMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo);
+		echo $repustaEliminarMayoreo["msj"];
+
 	}
 
 }
@@ -201,4 +239,34 @@ if (isset($_POST["cV"])&&isset($_POST["coleccion"])){
 	$finalizarVenta->cV=$_POST["cV"];
 	$finalizarVenta->coleccion=$_POST["coleccion"];
 	$finalizarVenta->finDeVenta();
+}
+/*=============================================
+SACAR TOTAL POR MAYOREO DE PRODUCTO
+=============================================*/
+if (isset($_POST["mayoreoProducto"])) {
+	$mayoreoVentaProducto=new BuscarProductoVenta();
+	$mayoreoVentaProducto->mayoreoProduc=$_POST["mayoreoProducto"];
+	$mayoreoVentaProducto->totalPorMayoreo();
+}
+/*=============================================
+IGRESAR DATOS AL CARRITO POR MAYOREO
+=============================================*/
+if(isset($_POST["codigoProduMayoreo"])&&isset($_POST["idUsuaMayoreo"])&&isset($_POST["cantidad"])&&isset($_POST["total"])){
+	$ventaMayoreo=new BuscarProductoVenta();
+	$ventaMayoreo->codigoProduMayoreo=$_POST["codigoProduMayoreo"];
+	$ventaMayoreo->idUsuaMayoreo=$_POST["idUsuaMayoreo"];
+	$ventaMayoreo->cantidad=$_POST["cantidad"];
+	$ventaMayoreo->total=$_POST["total"];
+	$ventaMayoreo->FunctionName();
+}
+/*=============================================
+ELIMINAR PRODUCTOS DEL CARRITO POR MAYOREO
+=============================================*/
+if (isset($_POST["eliminarVendedorMayoreo"])&&isset($_POST["eliminarProductoMayoreo"])&&isset($_POST["eliminarCantidadMayoreo"])){
+	$eliminarMayoreo=new BuscarProductoVenta();
+	$eliminarMayoreo->eliminarVendedorMayoreo=$_POST["eliminarVendedorMayoreo"];
+	$eliminarMayoreo->eliminarProductoMayoreo=$_POST["eliminarProductoMayoreo"];
+	$eliminarMayoreo->eliminarCantidadMayoreo=$_POST["eliminarCantidadMayoreo"];
+	$eliminarMayoreo->eliminarCarritoProductoMayoreo();
+
 }
