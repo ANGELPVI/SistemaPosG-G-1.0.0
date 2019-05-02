@@ -15,8 +15,8 @@ class ControlCrearVenta{
 
 	}
 // Agregar los productos al carrito
-	static public function ctlagregarProductoCarrito($idProducto,$idUsua){
-		$agregarProduc=ModeloCrearVenta::mdlagregarProducto($idProducto,$idUsua);
+	static public function ctlagregarProductoCarrito($cP,$idU,$membreciaPorBusqueda){
+		$agregarProduc=ModeloCrearVenta::mdlagregarProducto($cP,$idU,$membreciaPorBusqueda);
 		return $agregarProduc;
 	}
 
@@ -26,13 +26,13 @@ class ControlCrearVenta{
 		return $mostrarProduc;
 	}
 	//Eliminar productos del carrito de compras
-	static public function ctlEliminarProducto($eliminarProducto,$eliminarVendedor,$pregunta){
-		$eliminarProducto=ModeloCrearVenta::mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta);
+	static public function ctlEliminarProducto($eliminarProducto,$eliminarVendedor,$pregunta,$agregarBotonMen){
+		$eliminarProducto=ModeloCrearVenta::mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta,$agregarBotonMen);
 		return $eliminarProducto;
 	}
 	// Agregar producto al carrito de compra por lector de barra
-	static public function ctlAgregarProductoPorCodigo($codigo,$vendedor){
-		$agregarProductoCodigo=ModeloCrearVenta::mdlAgregarProductoPorCodigo($codigo,$vendedor);
+	static public function ctlAgregarProductoPorCodigo($codigo,$vendedor,$descuentoMembre){
+		$agregarProductoCodigo=ModeloCrearVenta::mdlAgregarProductoPorCodigo($codigo,$vendedor,$descuentoMembre);
 		return $agregarProductoCodigo;
 
 	}
@@ -59,8 +59,8 @@ class ControlCrearVenta{
 		return $mayoreoVenta;
 	}
 	// agregar al carrito de compra por mayoreo
-	static public function ctlVentaM($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo){
-		$ventaMayor=ModeloCrearVenta::mdlVentaMayor($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo);
+	static public function ctlVentaM($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo,$ventaMayoreoMem){
+		$ventaMayor=ModeloCrearVenta::mdlVentaMayor($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo,$ventaMayoreoMem);
 		return $ventaMayor;
 
 	}
@@ -68,6 +68,10 @@ class ControlCrearVenta{
 	static public function ctlEliminarMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo){
 		$eliminarMayoreo=ModeloCrearVenta::mdlEliminarProductoMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo);
 		return $eliminarMayoreo;
-
+	}
+	//Buscar membrecia
+	static public function ctlBuscarMembrecia($membrecia){
+		$ctlBuscarMembrecia=ModeloCrearVenta::mdlBuscarMembrecia($membrecia);
+		return $ctlBuscarMembrecia;
 	}
 }

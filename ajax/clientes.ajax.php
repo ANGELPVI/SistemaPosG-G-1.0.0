@@ -4,7 +4,7 @@ require_once "../modelos/clientes.modelo.php";
 class AjaxClientes{
 	/*=============================================
 	EDITAR CLIENTE
-	=============================================*/	
+	=============================================*/
 	public $idCliente;
 	public function ajaxEditarCliente(){
 		$item = "id";
@@ -15,7 +15,7 @@ class AjaxClientes{
 
 	/*=============================================
 	VALIDAR NO REPETIR CLIENTE
-	=============================================*/	
+	=============================================*/
 	public $validarCliente;
 	public function ajaxValidarCliente(){
 		$item = "nombre";
@@ -27,7 +27,7 @@ class AjaxClientes{
 
 /*=============================================
 EDITAR CLIENTE
-=============================================*/	
+=============================================*/
 if(isset($_POST["idCliente"])){
 	$cliente = new AjaxClientes();
 	$cliente -> idCliente = $_POST["idCliente"];

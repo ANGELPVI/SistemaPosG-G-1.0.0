@@ -30,12 +30,13 @@ class ModeloCrearVenta{
 	/*=============================================
 	AGREGAR PRODUCTO AL CARRITO DE COMPRAS
 	=============================================*/
-	static public function mdlagregarProducto($cp,$idusu){
-		$stmt=Conexion::conectar()->prepare("CALL carrito_compra(:idpro,:idusu);");
-		$stmt->bindParam(":idpro",$cp,PDO::PARAM_INT);
-		$stmt->bindParam(":idusu",$idusu,PDO::PARAM_INT);
+	static public function mdlagregarProducto($idProducto,$idUsua,$membreciaPorBusqueda){
+		$stmt=Conexion::conectar()->prepare("CALL carrito_compra(:idpro,:idusu,:membrecia);");
+		$stmt->bindParam(":idpro",$idProducto,PDO::PARAM_INT);
+		$stmt->bindParam(":idusu",$idUsua,PDO::PARAM_INT);
+		$stmt->bindParam(":membrecia",$membreciaPorBusqueda,PDO::PARAM_INT);
 		if ($stmt->execute()) {
-			return "ok";
+			return $stmt->fetch();
 		}else{
 			return "error";
 		}
@@ -62,11 +63,12 @@ class ModeloCrearVenta{
 	/*=============================================
 	ELIMINAR PRODUCTOS DEL CARRITO DE COMPRAS
 	=============================================*/
-	static public function mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta){
-		$stmt=conexion::conectar()->prepare("CALL elimina_agregar(:produc,:vendedor,:pregunta)");
+	static public function mdlEliminarProductoCarrito($eliminarProducto,$eliminarVendedor,$pregunta,$agregarBotonMen){
+		$stmt=conexion::conectar()->prepare("CALL elimina_agregar(:produc,:vendedor,:pregunta,:membrecia)");
 		$stmt->bindParam(":produc",$eliminarProducto,PDO::PARAM_INT);
 		$stmt->bindParam(":vendedor",$eliminarVendedor,PDO::PARAM_INT);
 		$stmt->bindParam(":pregunta",$pregunta,PDO::PARAM_STR);
+		$stmt->bindParam(":membrecia",$agregarBotonMen,PDO::PARAM_INT);
 		if ($stmt->execute()) {
 			return; 'ok';
 		}else{
@@ -79,10 +81,11 @@ class ModeloCrearVenta{
 	/*=============================================
 	AGREGAR PRODUCTO AL CARRITO POR LECTOR DE BARRA
 	=============================================*/
-	static public function mdlAgregarProductoPorCodigo($codigo,$vendedor){
-		$stmt=Conexion::conectar()->prepare("CALL agregarPorLector(:producto,:vendedor)");
+	static public function mdlAgregarProductoPorCodigo($codigo,$vendedor,$descuentoMembre){
+		$stmt=Conexion::conectar()->prepare("CALL agregarPorLector(:producto,:vendedor,:membre)");
 		$stmt->bindParam(":producto",$codigo,PDO::PARAM_INT);
 		$stmt->bindParam(":vendedor",$vendedor,PDO::PARAM_STR);
+		$stmt->bindParam(":membre",$descuentoMembre,PDO::PARAM_INT);
 		if ($stmt->execute()) {
 			return $stmt->fetch();
 		}else{
@@ -155,12 +158,13 @@ class ModeloCrearVenta{
 	/*=============================================
 	Agregar al carrito venta por mayoreo
 	=============================================*/
-	static public function mdlVentaMayor($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo){
-		$stmt=Conexion::conectar()->prepare("CALL ventaPorMayoreo(:producto,:cantidad,:total,:vendedor)");
+	static public function mdlVentaMayor($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo,$ventaMayoreoMem){
+		$stmt=Conexion::conectar()->prepare("CALL ventaPorMayoreo(:producto,:cantidad,:total,:vendedor,:membre)");
 		$stmt->bindParam(":producto",$codigoProduMayoreo,PDO::PARAM_STR);
 		$stmt->bindParam(":cantidad",$cantidad,PDO::PARAM_INT);
 		$stmt->bindParam(":total",$total,PDO::PARAM_INT);
 		$stmt->bindParam(":vendedor",$idUsuaMayoreo,PDO::PARAM_INT);
+		$stmt->bindParam(":membre",$ventaMayoreoMem,PDO::PARAM_INT);
 		if ($stmt->execute()){
 					return $stmt->fetch();
 		}else{
@@ -185,4 +189,15 @@ class ModeloCrearVenta{
 	$stmt->close();
 	$stmt=null;
 }
+static public function mdlBuscarMembrecia($membrecia){
+		$stmt=Conexion::conectar()->prepare("SELECT c.ife,c.nombre,c.email,c.telefono, (SELECT d.descuento FROM descuentos d WHERE d.id=c.id_descuento) AS descuento FROM clientes c WHERE ife=:ife");
+		$stmt->bindParam(":ife",$membrecia,PDO::PARAM_INT);
+		if ($stmt->execute()){
+					return $stmt->fetch();
+		}else{
+			return "Error de conexion, consulte a soporte tecnico";
+		}
+		$stmt->close();
+		$stmt=null;
+	}
 }

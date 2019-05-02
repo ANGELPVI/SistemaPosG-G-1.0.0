@@ -10,9 +10,10 @@ class ModeloClientes{
 
 	static public function mdlIngresarCliente($tabla, $datos){
 
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(id_descuento, nombre, telefono, email) VALUES (:descuento, :nombre, :telefono, :email)");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(ife,id_descuento, nombre, telefono, email) VALUES (:ife,:descuento, :nombre, :telefono, :email)");
 
 		$stmt->bindParam(":descuento", $datos["id_descuento"], PDO::PARAM_INT);
+		$stmt->bindParam(":ife", $datos["ife"], PDO::PARAM_INT);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":telefono", $datos["telefono"], PDO::PARAM_STR);
 		$stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
@@ -40,7 +41,7 @@ class ModeloClientes{
 
 		if($item != null){
 
-			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.estado,c.fecha FROM $tabla c WHERE c.$item = :$item");
+			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.ife,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.fecha FROM $tabla c WHERE c.$item = :$item");
 
 			$stmt -> bindParam(":".$item, $valor, PDO::PARAM_STR);
 
@@ -50,7 +51,7 @@ class ModeloClientes{
 
 		}else{
 
-			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.fecha FROM $tabla c");
+			$stmt = Conexion::conectar()->prepare("SELECT c.id,c.ife,c.id_descuento,(SELECT d.nombre FROM descuentos d WHERE d.id=c.id_descuento)as descuento, c.nombre,c.telefono,c.email,c.compras,c.ultima_compra,c.fecha FROM $tabla c");
 
 			$stmt -> execute();
 
@@ -89,8 +90,8 @@ class ModeloClientes{
 
 	static public function mdlEditarCliente($tabla, $datos){
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET id_descuento = :descuento, nombre = :nombre, telefono = :telefono, email = :email WHERE id = :id");
-
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET ife=:ife,id_descuento = :descuento, nombre = :nombre, telefono = :telefono, email = :email WHERE id = :id");
+		$stmt->bindParam(":ife",$datos["ife"],PDO::PARAM_INT);
 		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
 		$stmt->bindParam(":descuento", $datos["id_descuento"], PDO::PARAM_INT);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);

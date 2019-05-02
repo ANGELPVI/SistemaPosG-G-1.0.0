@@ -1,10 +1,10 @@
 <div id="back"></div>
 
 <div class="login-box">
-  
+
   <div class="login-logo">
 
-    <img src="vistas/img/plantilla/logo-blanco-bloque.png" class="img-responsive" style="padding:30px 100px 0px 100px">
+    <!-- <img src="vistas/img/plantilla/logo-blanco-bloque.png" class="img-responsive" style="padding:30px 100px 0px 100px"> -->
 
   </div>
 
@@ -25,15 +25,15 @@
 
         <input type="password" class="form-control" placeholder="Contraseña" name="ingPassword" required>
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      
+
       </div>
 
       <div class="row">
-       
+
         <div class="col-xs-4">
 
           <button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
-        
+
         </div>
 
       </div>
@@ -42,7 +42,7 @@
 
         $login = new ControladorUsuarios();
         $login -> ctrIngresoUsuario();
-        
+
       ?>
 
     </form>

@@ -41,6 +41,7 @@
          <tr>
            <th style="width:10px">#</th>
            <th>Descuento</th>
+           <th>IFE</th>
            <th>Nombre</th>
            <th>Teléfono</th>
            <th>Email</th>
@@ -61,11 +62,11 @@
 
           foreach ($clientes as $key => $value) {
 
-
             echo '<tr>
 
                     <td>'.($key+1).'</td>
                     <td>'.$value["descuento"].'</td>
+                    <td>'.$value["ife"].'</td>
                     <td>'.$value["nombre"].'</td>
                     <td>'.$value["telefono"].'</td>
                     <td>'.$value["email"].'</td>
@@ -157,6 +158,20 @@ MODAL AGREGAR CLIENTE
                     }
                 ?>
                 </select>
+
+              </div>
+
+            </div>
+
+            <!-- ENTRADA PARA EL IFE -->
+
+            <div class="form-group">
+
+              <div class="input-group">
+
+                <span class="input-group-addon"><i class="fa fa-id-card-o"></i></span>
+
+                <input type="text" class="form-control input-lg" name="nuevoIfe" id="nuevoIfe" placeholder="Ingresar Ife" required pattern="[0-9]*">
 
               </div>
 
@@ -287,6 +302,18 @@ MODAL EDITAR CLIENTE
                     }
                 ?>
                 </select>
+
+              </div>
+
+            </div>
+
+            <div class="form-group">
+
+              <div class="input-group">
+
+                <span class="input-group-addon"><i class="fa fa-id-card-o"></i></span>
+
+                <input type="text" class="form-control input-lg" name="editarnuevoIfe" id="editarnuevoIfe" placeholder="Ingresar Ife" required pattern="[0-9]*">
 
               </div>
 

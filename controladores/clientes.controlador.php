@@ -15,6 +15,7 @@ class ControladorClientes{
 			   	$tabla = "clientes";
 
 			   	$datos = array("id_descuento"=>$_POST["nuevoDescuento"],
+										"ife"=>$_POST["nuevoIfe"],
 			   				   "nombre"=>$_POST["nuevoNombre"],
 			   				   "telefono"=>$_POST["nuevoTelefono"],
 					           "email"=>$_POST["nuevoEmail"]);
@@ -110,6 +111,7 @@ class ControladorClientes{
 			   	$tabla = "clientes";
 
 			   	$datos = array("id"=>$_POST['editarId'],
+									 "ife"=>$_POST["editarnuevoIfe"],
 			   				   "id_descuento"=>$_POST["editarDescuento"],
 			   				   "nombre"=>$_POST["editarNombre"],
 			   				   "telefono"=>$_POST["editarTelefono"],

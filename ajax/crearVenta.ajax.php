@@ -36,6 +36,14 @@ class BuscarProductoVenta{
 	public $eliminarProductoMayoreo;
 	public $eliminarCantidadMayoreo;
 
+	public $membrecia;
+
+	// variables la cuales definen si hay descuento
+	public $descuentoMembre;
+	public $membreciaPorBusqueda;
+	public $ventaMayoreoMem;
+	public $agregarBotonMen;
+
 	public function venderProducto(){
 		$valor = $this->codigoProducto;
 		$p=ControlCrearVenta::ctlBuscarProducto($valor);
@@ -45,8 +53,10 @@ class BuscarProductoVenta{
 	public function agregarProductoCarrito(){
 		$cP=$this->cP;
 		$idU=$this->idU;
-		$agregar=ControlCrearVenta::ctlagregarProductoCarrito($cP,$idU);
-		echo $agregar;
+		$membreciaPorBusqueda=$this->membreciaPorBusqueda;
+		$agregar=ControlCrearVenta::ctlagregarProductoCarrito($cP,$idU,$membreciaPorBusqueda);
+		echo $agregar["msj"];
+
 
 	}
 
@@ -60,7 +70,7 @@ class BuscarProductoVenta{
 				<tr>
 					<td>'.$row["codigo"].'</td>
 					<td>'.$row["descripcion"].'</td>
-					<td>$'.$row["precio_venta"].'</td>
+					<td>$'.$row["carrito_costo"].'</td>
 					<td>'.$row["cantidad"].'</td>
 					<td>$'.$row["carrito_total"].'</td>
 					<td>
@@ -77,7 +87,7 @@ class BuscarProductoVenta{
 				<tr>
 					<td>'.$row["codigo"].'</td>
 					<td>'.$row["descripcion"].'</td>
-					<td>$'.$row["precio_venta"].'</td>
+					<td>$'.$row["carrito_costo"].'</td>
 					<td>'.$row["cantidad"].'</td>
 					<td>$'.$row["carrito_total"].'</td>
 					<td>
@@ -110,7 +120,8 @@ class BuscarProductoVenta{
 		 $eliminarProducto=$this->eliminarProducto;
 		 $eliminarVendedor=$this->eliminarVendedor;
 		 $pregunta=$this->pregunta;
-		 $eliminarProductosTabla=ControlCrearVenta::ctlEliminarProducto($eliminarProducto,$eliminarVendedor,$pregunta);
+		 $agregarBotonMen=$this->agregarBotonMen;
+		 $eliminarProductosTabla=ControlCrearVenta::ctlEliminarProducto($eliminarProducto,$eliminarVendedor,$pregunta,$agregarBotonMen);
 		 echo $eliminarProductosTabla;
 
 	}
@@ -118,8 +129,10 @@ class BuscarProductoVenta{
 	public function ventaProducto(){
 		$codigo=$this->codigo;
 		$vendedor=$this->vendedor;
-		$agregarProductoPorCodigo=ControlCrearVenta::ctlAgregarProductoPorCodigo($codigo,$vendedor);
+		$descuentoMembre=$this->descuentoMembre;
+		$agregarProductoPorCodigo=ControlCrearVenta::ctlAgregarProductoPorCodigo($codigo,$vendedor,$descuentoMembre);
 		echo $agregarProductoPorCodigo["msj"];
+
 
 	}
 
@@ -147,8 +160,8 @@ class BuscarProductoVenta{
 		$idUsuaMayoreo=$this->idUsuaMayoreo;
 		$cantidad=$this->cantidad;
 		$total=$this->total;
-
-		$ventaM=ControlCrearVenta::ctlVentaM($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo);
+		$ventaMayoreoMem=$this->ventaMayoreoMem;
+		$ventaM=ControlCrearVenta::ctlVentaM($codigoProduMayoreo,$cantidad,$total,$idUsuaMayoreo,$ventaMayoreoMem);
 		echo $ventaM["msj"];
 	}
 
@@ -158,6 +171,12 @@ class BuscarProductoVenta{
 		$eliminarCantidadMayoreo=$this->eliminarCantidadMayoreo;
 		$repustaEliminarMayoreo=ControlCrearVenta::ctlEliminarMayoreo($eliminarVendedorMayoreo,$eliminarProductoMayoreo,$eliminarCantidadMayoreo);
 		echo $repustaEliminarMayoreo["msj"];
+
+	}
+	public function buscarDatosMemnrecia(){
+		$membrecia=$this->membrecia;
+		$ajaxBuscarMembrecia=ControlCrearVenta::ctlBuscarMembrecia($membrecia);
+		echo json_encode($ajaxBuscarMembrecia);
 
 	}
 
@@ -175,10 +194,11 @@ if (isset($_POST["letras"])){
 /*=============================================
 AGREGA EL PRODUCTO AL CARRITO DE COMPRAS
 =============================================*/
-if (isset($_POST["codigoProdu"])&&isset($_POST["idUsua"])) {
+if (isset($_POST["codigoProdu"])&&isset($_POST["idUsua"])&&isset($_POST["membreciaPorBusqueda"])) {
 	$agregarProducto=new BuscarProductoVenta();
 	$agregarProducto->cP=$_POST["codigoProdu"];
 	$agregarProducto->idU=$_POST["idUsua"];
+	$agregarProducto->membreciaPorBusqueda=$_POST["membreciaPorBusqueda"];
 	$agregarProducto->agregarProductoCarrito();
 
 }
@@ -202,23 +222,25 @@ if (isset($_POST["totalVenta"])) {
 }
 
 /*=============================================
-ELIMINAR PRODUCTO DEL CARRITO DE COMPRAS
+ELIMINAR O AGREGAR PRODUCTO DEL CARRITO DE COMPRAS
 =============================================*/
-if (isset($_POST["producto"])&&isset($_POST["vendedor"])&&isset($_POST["pregunta"])){
+if (isset($_POST["producto"])&&isset($_POST["vendedor"])&&isset($_POST["pregunta"])&&isset($_POST["agregarBotonMen"])){
 	$eliminarProductoCarrito=new BuscarProductoVenta();
 	$eliminarProductoCarrito->eliminarProducto=$_POST["producto"];
 	$eliminarProductoCarrito->eliminarVendedor=$_POST["vendedor"];
 	$eliminarProductoCarrito->pregunta=$_POST["pregunta"];
+	$eliminarProductoCarrito->agregarBotonMen=$_POST["agregarBotonMen"];
 	$eliminarProductoCarrito->eliminarProducto();
 }
 
 /*=============================================
 AGREGAR PRODUCTOS POR CÓDIGO DE BARRA
 =============================================*/
-if (isset($_POST["codi"])&&isset($_POST["ven"])) {
+if (isset($_POST["codi"])&&isset($_POST["ven"])&&isset($_POST["descuentoMembre"])){
 		$agreagarProductoPorCodigo=new BuscarProductoVenta();
 		$agreagarProductoPorCodigo->codigo=$_POST["codi"];
 		$agreagarProductoPorCodigo->vendedor=$_POST["ven"];
+		$agreagarProductoPorCodigo->descuentoMembre=$_POST["descuentoMembre"];
 		$agreagarProductoPorCodigo->ventaProducto();
 }
 
@@ -251,12 +273,13 @@ if (isset($_POST["mayoreoProducto"])) {
 /*=============================================
 IGRESAR DATOS AL CARRITO POR MAYOREO
 =============================================*/
-if(isset($_POST["codigoProduMayoreo"])&&isset($_POST["idUsuaMayoreo"])&&isset($_POST["cantidad"])&&isset($_POST["total"])){
+if(isset($_POST["codigoProduMayoreo"])&&isset($_POST["idUsuaMayoreo"])&&isset($_POST["cantidad"])&&isset($_POST["total"])&&isset($_POST["ventaMayoreoMem"])){
 	$ventaMayoreo=new BuscarProductoVenta();
 	$ventaMayoreo->codigoProduMayoreo=$_POST["codigoProduMayoreo"];
 	$ventaMayoreo->idUsuaMayoreo=$_POST["idUsuaMayoreo"];
 	$ventaMayoreo->cantidad=$_POST["cantidad"];
 	$ventaMayoreo->total=$_POST["total"];
+	$ventaMayoreo->ventaMayoreoMem=$_POST["ventaMayoreoMem"];
 	$ventaMayoreo->FunctionName();
 }
 /*=============================================
@@ -268,5 +291,13 @@ if (isset($_POST["eliminarVendedorMayoreo"])&&isset($_POST["eliminarProductoMayo
 	$eliminarMayoreo->eliminarProductoMayoreo=$_POST["eliminarProductoMayoreo"];
 	$eliminarMayoreo->eliminarCantidadMayoreo=$_POST["eliminarCantidadMayoreo"];
 	$eliminarMayoreo->eliminarCarritoProductoMayoreo();
+}
 
+/*=============================================
+BUSCAR MEMBRECIA
+=============================================*/
+if (isset($_POST["membrecia"])){
+	$buscarMembrecia=new BuscarProductoVenta();
+	$buscarMembrecia->membrecia=$_POST["membrecia"];
+	$buscarMembrecia->buscarDatosMemnrecia();
 }

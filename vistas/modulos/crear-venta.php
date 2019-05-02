@@ -48,7 +48,7 @@
           </div>
 
           <div class="box-footer">
-            <!-- <h5><strong>Descuento: %0</strong></h5> -->
+            <h4><strong id="mebreciaDesc">Descuento:</strong></h4>
             <h4 id="totalVenta"></h4>
             <h4><strong id="cambio">Cambio:</strong></h4>
           </div>
@@ -91,7 +91,7 @@
               </div>
 
               <?php echo '<input id="id_usuario_venta" type="hidden" value="'.$_SESSION["id"].'">'; ?>
-
+              <input type="hidden" id="inputMembreciaAplicado" value="0">
             <!-- <div class="productos"></div> -->
             <div class="list-group"></div>
 
@@ -166,6 +166,70 @@ MODAL VERDER POR MAYOREO
           <button type="submit" class="btn btn-success" >Ok</button>
       </div>
       </form>
+    </div>
+  </div>
+</div>
+
+
+<!--=====================================
+MODAL VENTA POR MENBRECIA
+======================================-->
+<div class="modal fade" id="modalMenbrecias" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!--=====================================
+         ENCABEZADO DEL MODAL
+       ======================================-->
+      <div class="modal-header" style="background:#3d5afe; color:#ffffff">
+        <h4 class="modal-title">MEMBRECIA</h4>
+      </div>
+
+      <!--=====================================
+         CUERPO DELMODAL
+       ======================================-->
+      <div class="modal-body">
+        <div class="form-group">
+
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-id-card"></i></span>
+              <input id="inputMembrecia" type="text" name="membrecia"class="form-control" placeholder="Ingresa la Membrecia" autofocus="true" required="true" pattern="[0-9]*">
+            </div><br>
+        </div>
+        <div class="row">
+          <div class="col-lg-7">
+            <h4 class="nombre">NOMBRE:</h4>
+          </div>
+          <div class="col-lg-5">
+              <h4 class="ife">IFE:</h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-7">
+            <h4 class="correo">CORREO:</h4>
+          </div>
+          <div class="col-lg-5">
+            <h4 class="tel">TEL:</h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-7">
+            <h4 class="descuento">DESCUENTO:</h4>
+          </div>
+        </div>
+
+      </div>
+      <div class="alert alert-danger alertaError" role="alert" style="margin:10px;display:none;"><strong>¡Error!</strong> no está ingresando datos validos. </div>
+      <div class="alert alert-danger alertaErrorMembrecia" role="alert" style="margin:10px;display:none;"><strong>¡Error!</strong> no se encontró la membrecía. </div>
+      <!--=====================================
+         FONDO DEL MODAL
+       ======================================-->
+      <div class="modal-footer">
+          <button type="button" class="btn btn-defaul pull-left salirMenbrecia" data-dismiss="modal">Salir</button>
+          <button type="submit" class="btn btn-success membreciaAplicada">Ok</button>
+      </div>
+
     </div>
   </div>
 </div>
