@@ -75,7 +75,7 @@
               <form class="" method="post" id="formCodigo">
                 <div class="form-group">
                     <label for="producto">Código del proucto</label>
-                     <input type="text" class="form-control" name="producto" id="porCodigo" placeholder="Ejemplo: 1030" pattern="[0-9]*" required="true">
+                     <input type="text" class="form-control" name="producto" id="porCodigo" placeholder="Ejemplo: 1030" pattern="[0-9]*" required="true" autofocus="true">
                      <p class="text-danger" style="display:none;">Error, <strong>el producto está agotado o no exite</strong></p>
                 </div>
               </form>

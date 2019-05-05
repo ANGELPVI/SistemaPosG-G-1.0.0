@@ -72,15 +72,17 @@ class ModeloVentas{
 	ELIMINAR VENTA
 	=============================================*/
 
-	static public function mdlEliminarVenta($tabla, $datos){
+	static public function mdlEliminarVenta($idVenta,$cantidadProduc,$producto){
 
-		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id = :id");
+		$stmt = Conexion::conectar()->prepare("CALL eliminarVenta(:idVenta,:cantidad,:producto);");
 
-		$stmt -> bindParam(":id", $datos, PDO::PARAM_INT);
+		$stmt -> bindParam(":idVenta",$idVenta, PDO::PARAM_INT);
+		$stmt -> bindParam(":cantidad",$cantidadProduc, PDO::PARAM_INT);
+		$stmt -> bindParam(":producto",$producto, PDO::PARAM_STR);
 
 		if($stmt -> execute()){
 
-			return "ok";
+			return $stmt->fetch();
 
 		}else{
 
