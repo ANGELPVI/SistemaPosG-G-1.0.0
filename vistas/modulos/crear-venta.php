@@ -192,7 +192,7 @@ MODAL VENTA POR MENBRECIA
 
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-id-card"></i></span>
-              <input id="inputMembrecia" type="text" name="membrecia"class="form-control" placeholder="Ingresa la Membrecia" autofocus="true" required="true" pattern="[0-9]*">
+              <input id="inputMembrecia" type="text" name="membrecia" class="form-control" placeholder="Ingresa la Membrecia" autofocus="true" required="true" pattern="[0-9]*">
             </div><br>
         </div>
         <div class="row">

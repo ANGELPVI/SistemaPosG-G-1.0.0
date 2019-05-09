@@ -359,12 +359,13 @@ CONCRETAR VENTA
 =============================================*/
 document.addEventListener("keydown", function(e){
 	var vendedor=$("#id_usuario_venta").val();
-	var cobrar=$("#cobrarVenta").val();
+	var cobrar=parseInt($("#cobrarVenta").val());
+	var total=parseInt($("#totalV").text());
 	var productos='';
 	var datos=new FormData();
 	datos.append("concretarVendedor",vendedor);
 	if ((e.which===120)){
-		if (cobrar!=""&&/^([0-9])*$/.test(cobrar)){
+		if (cobrar!=""&&/^([0-9])*$/.test(cobrar)&&cobrar>=total){
 			$("#cobrarVenta").val('');
 			$("#porCodigo").val('')
 			$("#busquedaProducto").val('');
@@ -382,10 +383,12 @@ document.addEventListener("keydown", function(e){
 			    dataType:"json",
 			    success:function(resp){
 			      // Otro ajax para insertar
+			      var men=$("#inputMembreciaAplicado").val();
 			      productos=JSON.stringify(resp);
 			      var datosV=new FormData();
 			      datosV.append("cV",vendedor);
 			      datosV.append("coleccion",productos);
+						datosV.append("membre",men);
 			      $.ajax({
 			        url:"ajax/crearVenta.ajax.php",
 			        method:"POST",
@@ -408,6 +411,7 @@ document.addEventListener("keydown", function(e){
 			                  $("#busquedaProducto").removeAttr("disabled");
 			                }, 3000);
 			            }else{
+											console.log(respuestas);
 			              $(".alert").show(1000);
 			              $("#cobrarVenta").removeAttr("disabled");
 			              $("#porCodigo").removeAttr("disabled");
@@ -424,6 +428,7 @@ document.addEventListener("keydown", function(e){
 		}else{
 				$(".alert").show(1000);
 				$("#cobrarVenta").css("border","solid 1px red");
+				console.log("error el if inicial");
 
 		}
 	}
@@ -441,8 +446,8 @@ $("#cobrarVenta").click(function(){
 OPERACIONES DE COBRO Y CAMBIO DE LA VENTA
 =============================================*/
 $("#cobrarVenta").change(function(){
-	var cobrar=$("#cobrarVenta").val();
-	var total=$("#totalV").text();
+	var cobrar=parseFloat($("#cobrarVenta").val());
+	var total=parseFloat($("#totalV").text());
 		if (/^([0-9])*$/.test(cobrar)&&cobrar!=""){
 				var resta=0;
 				var resta=parseFloat(resta);
@@ -544,20 +549,6 @@ $(".tablas").on("click", ".btnImprimirFactura", function(){
 	var codigoVenta = $(this).attr("codigoVenta");
 
 	window.open("extensiones/tcpdf/pdf/factura.php?codigo="+codigoVenta, "_blank");
-
-})
-
-/*=============================================
-BOTON EDITAR VENTA
-=============================================*/
-
-$(".tablas").on("click", ".btnEditarVenta", function(){
-
-	var idVenta = $(this).attr("idVenta");
-	console.log("idVenta", idVenta);
-
-	window.location = "index.php?ruta=editar-venta&idVenta="+idVenta;
-
 
 })
 

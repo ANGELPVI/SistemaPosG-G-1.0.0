@@ -24,6 +24,7 @@ class BuscarProductoVenta{
 
 	public $cV;
 	public $coleccion;
+	public $membre;
 
 	public $mayoreoProduc;
 
@@ -70,7 +71,7 @@ class BuscarProductoVenta{
 				<tr>
 					<td>'.$row["codigo"].'</td>
 					<td>'.$row["descripcion"].'</td>
-					<td>$'.$row["carrito_costo"].'</td>
+					<td>$'.number_format($row["carrito_costo"],2).'</td>
 					<td>'.$row["cantidad"].'</td>
 					<td>$'.$row["carrito_total"].'</td>
 					<td>
@@ -87,7 +88,7 @@ class BuscarProductoVenta{
 				<tr>
 					<td>'.$row["codigo"].'</td>
 					<td>'.$row["descripcion"].'</td>
-					<td>$'.$row["carrito_costo"].'</td>
+					<td>$'.number_format($row["carrito_costo"],2).'</td>
 					<td>'.$row["cantidad"].'</td>
 					<td>$'.$row["carrito_total"].'</td>
 					<td>
@@ -145,8 +146,11 @@ class BuscarProductoVenta{
 	public function finDeVenta(){
 		$cV=$this->cV;
 		$coleccion=$this->coleccion;
-		$finalizarVenta=ControlCrearVenta::ctlFinalizarVenta($cV,$coleccion);
+		$membre=$this->membre;
+		$finalizarVenta=ControlCrearVenta::ctlFinalizarVenta($cV,$coleccion,$membre);
 		echo $finalizarVenta["msj"];
+		//echo $finalizarVenta;
+
 	}
 
 	public function totalPorMayoreo(){
@@ -256,10 +260,11 @@ $terminarLaVenta->concretarVenta();
 /*=============================================
 CONCRETAR VENTA
 =============================================*/
-if (isset($_POST["cV"])&&isset($_POST["coleccion"])){
+if (isset($_POST["cV"])&&isset($_POST["coleccion"])&&isset($_POST["membre"])){
 	$finalizarVenta=new BuscarProductoVenta();
 	$finalizarVenta->cV=$_POST["cV"];
 	$finalizarVenta->coleccion=$_POST["coleccion"];
+	$finalizarVenta->membre=$_POST["membre"];
 	$finalizarVenta->finDeVenta();
 }
 /*=============================================

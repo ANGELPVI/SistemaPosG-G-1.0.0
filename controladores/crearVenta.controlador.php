@@ -44,10 +44,20 @@ class ControlCrearVenta{
 	}
 
 	//FINALIZAR LA VENTA DE Productos
-	static public function ctlFinalizarVenta($idVendedor,$produc){
-		$finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($idVendedor,$produc);
-		return $finalizarVenta;
+	static public function ctlFinalizarVenta($cV,$coleccion,$membre){
+
+		if ($membre>0){
+				$carri=ModeloCrearVenta::mdlColeccion($cV);
+				foreach ($carri as $key => $value) {
+					$catualizarVentaPro=ModeloCrearVenta::mdlActualizaCampoVentaPro($value["cantidad"],$value["codigo"]);
+				}
+				 $finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($cV,$coleccion,$membre);
+		}else{
+			$finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($cV,$coleccion,$membre);
+		}
+			return $finalizarVenta;
 	}
+
 	//Vender productos por mayoreo
 	static public function ctlVentaPorMayoreo(){
 		$verProductoMayoreo=ModeloCrearVenta:: mdlVentaPorMayoreo();

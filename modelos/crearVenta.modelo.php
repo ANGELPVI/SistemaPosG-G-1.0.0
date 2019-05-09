@@ -114,10 +114,11 @@ class ModeloCrearVenta{
 	/*=============================================
 	Finalizar la venta
 	=============================================*/
-	static public function mdlFinalizarVenta($idVendedor,$produc){
-		$stmt=Conexion::conectar()->prepare("CALL ConcretarVenta(:idVendedor,:productos)");
+	static public function mdlFinalizarVenta($idVendedor,$produc,$membre){
+		$stmt=Conexion::conectar()->prepare("CALL ConcretarVenta(:idVendedor,:productos,:membre)");
 		$stmt->bindParam(":idVendedor",$idVendedor,PDO::PARAM_INT);
 		$stmt->bindParam(":productos",$produc,PDO::PARAM_STR);
+			$stmt->bindParam(":membre",$membre,PDO::PARAM_INT);
 		if ($stmt->execute()){
 					return $stmt->fetch();
 		}else{
@@ -189,6 +190,10 @@ class ModeloCrearVenta{
 	$stmt->close();
 	$stmt=null;
 }
+
+/*=============================================
+SELECCIONAR MEMBRECIA
+=============================================*/
 static public function mdlBuscarMembrecia($membrecia){
 		$stmt=Conexion::conectar()->prepare("SELECT c.ife,c.nombre,c.email,c.telefono, (SELECT d.descuento FROM descuentos d WHERE d.id=c.id_descuento) AS descuento FROM clientes c WHERE ife=:ife");
 		$stmt->bindParam(":ife",$membrecia,PDO::PARAM_INT);
@@ -200,4 +205,20 @@ static public function mdlBuscarMembrecia($membrecia){
 		$stmt->close();
 		$stmt=null;
 	}
+
+	/*=============================================
+	Actualizar los productos en su ventas
+	=============================================*/
+	static public function mdlActualizaCampoVentaPro($cantidad,$producto){
+			$stmt=Conexion::conectar()->prepare("CALL actualizarProductoCampoVen(:cant,:codi);");
+			$stmt->bindParam(":cant",$cantidad,PDO::PARAM_INT);
+			$stmt->bindParam(":codi",$producto,PDO::PARAM_STR);
+			if ($stmt->execute()){
+						return $stmt->fetch();
+			}else{
+				return "Error de conexion, consulte a soporte tecnico";
+			}
+			$stmt->close();
+			$stmt=null;
+		}
 }
