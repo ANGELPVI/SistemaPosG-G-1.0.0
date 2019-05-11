@@ -48,7 +48,15 @@ class BuscarProductoVenta{
 	public function venderProducto(){
 		$valor = $this->codigoProducto;
 		$p=ControlCrearVenta::ctlBuscarProducto($valor);
-			echo json_encode($p);
+		while ($row=$p->fetch(PDO::FETCH_ASSOC)) {
+			if ($row["stock"]==="0") {
+					echo '<li class="list-group-item disabled">'.$row["descripcion"].'<span class="badge badge-danger badge-pill">'.$row["stock"].'</span></li>';
+			}else{
+					echo '<a href="#" style="border-top:2px solid #ffffff" class="list-group-item list-group-item-action active" data-co="'.$row["id"].'">'.$row["descripcion"].'<span class="badge badge-primary badge-pill">'.$row["stock"].'</span></a>';
+
+			}
+		}
+			//echo json_encode($p);
 	}
 
 	public function agregarProductoCarrito(){

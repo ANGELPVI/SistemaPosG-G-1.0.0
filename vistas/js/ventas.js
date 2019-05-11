@@ -119,10 +119,11 @@ BUSCAR PRODUCTO POR NOMBRE O CODIGO CON EL PANEL DE CONTROL
 $("#busquedaProducto").keyup(function(e){
 	var buscar=$("#busquedaProducto").val();
 	if (buscar!=""){
-		var codigo=e.which;
-		var letras=String.fromCharCode(codigo);
+		// var codigo=e.which;
+		// var letras=String.fromCharCode(codigo);
 		var datos=new FormData();
-		datos.append('letras',letras);
+		console.log(buscar);
+		datos.append('letras',buscar);
 		$.ajax({
 			  url:"ajax/crearVenta.ajax.php",
 		      method: "POST",
@@ -130,16 +131,8 @@ $("#busquedaProducto").keyup(function(e){
 		      cache: false,
 		      contentType: false,
 		      processData: false,
-		      dataType:"json",
 		      success:function(respuesta){
-		      		for(var i in respuesta){
-								if (respuesta[i].stock==="0"){
-									$(".list-group").append('<li class="list-group-item disabled">'+respuesta[i].descripcion+'<span class="badge badge-danger badge-pill">'+respuesta[i].stock+'</span></li>');
-								}else{
-									$(".list-group").append('<a href="#" style="border-top:2px solid #ffffff" class="list-group-item list-group-item-action active" data-co="'+respuesta[i].id+'">'+respuesta[i].descripcion+'<span class="badge badge-primary badge-pill">'+respuesta[i].stock+'</span></a>');
-								}
-
-							}
+		      		$(".list-group").html(respuesta);
 		      }
 		});
 
