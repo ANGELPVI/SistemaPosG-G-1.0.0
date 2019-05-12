@@ -126,7 +126,7 @@
 
                       if($_SESSION["perfil"] == "Super Administrador"){
 
-                      echo '<button class="btn btn-danger btnEliminarVenta" idVenta="'.$value["id"].'"><i class="fa fa-times"></i></button>';
+                      echo '<button class="btn btn-danger btnEliminarVenta" idCliente="'.$value["id_cliente"].'" idVenta="'.$value["id"].'"><i class="fa fa-times"></i></button>';
 
                     }
 

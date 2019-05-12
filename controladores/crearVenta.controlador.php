@@ -53,7 +53,11 @@ class ControlCrearVenta{
 				}
 				 $finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($cV,$coleccion,$membre);
 		}else{
-			$finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($cV,$coleccion,$membre);
+			$carri=ModeloCrearVenta::mdlColeccion($cV);
+			foreach ($carri as $key => $value) {
+				$catualizarVentaPro=ModeloCrearVenta::mdlActualizaCampoVentaPro($value["cantidad"],$value["codigo"]);
+			}
+			 $finalizarVenta=ModeloCrearVenta::mdlFinalizarVenta($cV,$coleccion,$membre);
 		}
 			return $finalizarVenta;
 	}

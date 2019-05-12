@@ -125,18 +125,28 @@ class ControladorVentas{
 	ELIMINAR VENTA
 	=============================================*/
 	static public function ctrEliminarVenta(){
-		if (isset($_GET["idVenta"])) {
+		if (isset($_GET["idVenta"])&&isset($_GET["cliente"])) {
 			//desformatiar el json de la base de datos
 			$tabla="ventas";
 			$item="id";
 			$valor=$_GET["idVenta"];
+			$cliente=$_GET["cliente"];
 			$ProductosVendidos = ModeloVentas::mdlMostrarVentas($tabla, $item, $valor);
 			$ProductosVendidos["productos"];
 			$productos = json_decode($ProductosVendidos["productos"], true);
-			if (isset($productos)){
+			if (isset($productos)&&$cliente==0){
+				echo "ejecutado";
 				foreach (	$productos as $key => $value) {
 					$respuestaEliminar=ModeloVentas::mdlEliminarVenta($valor,$value["cantidad"],$value["codigo"]);
 				}
+				$eliminarTablaVenta=ModeloVentas::mdlEliminarTablaVenta($valor);
+			}else{
+				echo "ejecutado en membrecia";
+				foreach (	$productos as $key => $value) {
+					$respuestaEliminar=ModeloVentas::mdlEliminarVenta($valor,$value["cantidad"],$value["codigo"]);
+				}
+					$actualizarVentaCliente=ModeloVentas::mdlActualizarClienteVenta($cliente);
+					$eliminarTablaVenta=ModeloVentas::mdlEliminarTablaVenta($valor);
 			}
 
 			if (isset($respuestaEliminar)) {

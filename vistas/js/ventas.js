@@ -402,6 +402,8 @@ document.addEventListener("keydown", function(e){
 			                  $("#cobrarVenta").removeAttr("disabled");
 			                  $("#porCodigo").removeAttr("disabled");
 			                  $("#busquedaProducto").removeAttr("disabled");
+												$("#mebreciaDesc").text("");
+												$("#inputMembreciaAplicado").attr("value","0");
 			                }, 3000);
 			            }else{
 											console.log(respuestas);
@@ -553,7 +555,7 @@ BORRAR VENTA
 $(".tablas").on("click", ".btnEliminarVenta", function(){
 
   var idVenta = $(this).attr("idVenta");
-
+	var idCliente=$(this).attr("idCliente");
   swal({
         title: '¿Está seguro de borrar la venta?',
         text: "¡Si no lo está puede cancelar la accíón!",
@@ -566,7 +568,7 @@ $(".tablas").on("click", ".btnEliminarVenta", function(){
       }).then(function(result) {
         if (result.value) {
 
-            window.location = "index.php?ruta=ventas&idVenta="+idVenta;
+            window.location = "index.php?ruta=ventas&idVenta="+idVenta+"&cliente="+idCliente;
         }
 
   })

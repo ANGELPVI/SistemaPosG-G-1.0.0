@@ -9,7 +9,7 @@ class ModeloCrearVenta{
 
 	static public function mdlBuscarProducto($valor){
 
-		$stmt = Conexion::conectar()->prepare("SELECT id,descripcion, codigo,stock FROM productos WHERE descripcion LIKE '$valor%' ORDER BY descripcion ASC");
+		$stmt = Conexion::conectar()->prepare("SELECT id,descripcion, codigo,stock FROM productos WHERE descripcion LIKE '%$valor%' ORDER BY descripcion ASC");
 
 		if($stmt->execute()){
 

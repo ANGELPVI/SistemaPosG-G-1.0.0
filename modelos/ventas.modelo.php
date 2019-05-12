@@ -153,6 +153,51 @@ class ModeloVentas{
 		$stmt = null;
 
 	}
+	/*=============================================
+	ACTUALIZAR CAMPO VENTAS EN CLIENTE
+	=============================================*/
+	static public function mdlActualizarClienteVenta($cliente){
+		$stmt = Conexion::conectar()->prepare("UPDATE clientes SET compras=compras-1 WHERE id=:cliente");
 
+		$stmt -> bindParam(":cliente",$cliente, PDO::PARAM_INT);
+
+		if($stmt -> execute()){
+
+			return $stmt->fetch();
+
+		}else{
+
+			return "error";
+
+		}
+
+		$stmt -> close();
+
+		$stmt = null;
+
+	}
+	/*=============================================
+	ELIMINAR LA VENTA DE LA TABLA
+	=============================================*/
+static public function mdlEliminarTablaVenta($valor){
+	$stmt = Conexion::conectar()->prepare("DELETE FROM ventas WHERE id=:valor");
+
+	$stmt -> bindParam(":valor",$valor,PDO::PARAM_INT);
+
+	if($stmt -> execute()){
+
+		return $stmt->fetch();
+
+	}else{
+
+		return "error";
+
+	}
+
+	$stmt -> close();
+
+	$stmt = null;
+
+}
 
 }
