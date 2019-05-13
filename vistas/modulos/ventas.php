@@ -4,7 +4,7 @@
 
     <h1>
 
-      Administrar ventas
+      Administrar venta
 
     </h1>
 
@@ -105,10 +105,6 @@
                   $respuestaUsuario = ControladorUsuarios::ctrMostrarUsuarios($itemUsuario, $valorUsuario);
 
                   echo '<td>'.$respuestaUsuario["nombre"].'</td>
-
-
-
-
 
                   <td>$ '.number_format($value["total"],2).'</td>
 
