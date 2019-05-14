@@ -12,7 +12,7 @@
 
       <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
 
-      <li class="active">Crear ventaaaa!</li>
+      <li class="active">Crear venta</li>
 
     </ol>
 
