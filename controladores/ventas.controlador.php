@@ -135,13 +135,13 @@ class ControladorVentas{
 			$ProductosVendidos["productos"];
 			$productos = json_decode($ProductosVendidos["productos"], true);
 			if (isset($productos)&&$cliente==0){
-				echo "ejecutado";
+
 				foreach (	$productos as $key => $value) {
 					$respuestaEliminar=ModeloVentas::mdlEliminarVenta($valor,$value["cantidad"],$value["codigo"]);
 				}
 				$eliminarTablaVenta=ModeloVentas::mdlEliminarTablaVenta($valor);
 			}else{
-				echo "ejecutado en membrecia";
+
 				foreach (	$productos as $key => $value) {
 					$respuestaEliminar=ModeloVentas::mdlEliminarVenta($valor,$value["cantidad"],$value["codigo"]);
 				}

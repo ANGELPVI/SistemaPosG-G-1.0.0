@@ -24,4 +24,3 @@ require_once 'modelos/movimientos.modelo.php';
 require_once 'modelos/crearVenta.modelo.php';
 $plantilla = new ControladorPlantilla();
 $plantilla -> ctrPlantilla();
-hola

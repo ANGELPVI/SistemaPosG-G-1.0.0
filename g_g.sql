@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-04-2019 a las 19:50:49
+-- Tiempo de generación: 14-05-2019 a las 01:56:18
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.1.26
 
@@ -26,7 +26,26 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `agregarPorLector` (IN `idpro` INT, IN `idusu` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarProductoCampoVen` (IN `cantidad` INT, IN `codi` TEXT)  NO SQL
+BEGIN
+/*Ing. Ángel PV
+Actualizar los productos en el campo de venta
+*/
+START TRANSACTION;
+UPDATE productos SET ventas=ventas+cantidad WHERE codigo=codi;
+COMMIT;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarVentaCliente` (IN `membrecia` INT)  NO SQL
+BEGIN
+/*Ing. Ánge PV*/
+START TRANSACTION;
+UPDATE clientes SET compras=compras-1 WHERE ife=membrecia;
+COMMIT;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `agregarPorLector` (IN `idpro` TEXT, IN `idusu` INT, IN `membrecia` INT)  NO SQL
 BEGIN
 /*
 Ing. Ángel Piña Viveros
@@ -35,20 +54,98 @@ SET @stock=0;
 set @precio=0;
 set @id=0;
 set @idproduc=0;
-
+set @descu=0;
 SELECT stock INTO @stock FROM productos WHERE codigo=idpro;
 SELECT precio_venta INTO @precio FROM productos WHERE codigo=idpro;
 SELECT id INTO @idproduc FROM productos WHERE codigo=idpro;
 SELECT MAX(id) INTO @id FROM carrito_compra;
+SELECT (SELECT descuento FROM descuentos WHERE id=id_descuento) INTO @desc FROM clientes WHERE ife=membrecia;
 
 START TRANSACTION;
+IF(membrecia>0)THEN
 IF (@stock=0)THEN
 SELECT 'No hay producto' AS msj;
 ROLLBACK;
 ELSE
 IF EXISTS(SELECT carrito_id_producto FROM carrito_compra WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu)THEN
+IF(idpro='1' OR idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion; 
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precioDes WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion; 
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precioDes WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-1 WHERE id=@idproduc;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+
+ELSE
+IF(idpro='1' OR idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion; 
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@precioDes,1,@precioDes,idusu);
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion; 
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@precioDes,1,@precioDes,idusu);
+UPDATE productos SET stock=stock-1 WHERE id=@idproduc;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+END IF;
+END IF;
+
+/*Sin membrecia*/
+ELSE
+IF (@stock=0)THEN
+SELECT 'No hay producto' AS msj;
+ROLLBACK;
+ELSE
+IF EXISTS(SELECT carrito_id_producto FROM carrito_compra WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu)THEN
+IF(idpro='1' OR idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004')THEN
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precio WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
 UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precio WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
 UPDATE productos SET stock=stock-1 WHERE id=@idproduc;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+
+ELSE
+IF(idpro='1' OR idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004')THEN
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@precio,1,@precio,idusu);
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
 SELECT 'ok' AS msj;
 COMMIT;
 ELSE
@@ -58,9 +155,11 @@ SELECT 'ok' AS msj;
 COMMIT;
 END IF;
 END IF;
+END IF;
+END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `carrito_compra` (IN `idpro` INT, IN `idusu` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `carrito_compra` (IN `idpro` INT, IN `idusu` INT, IN `membrecia` INT)  NO SQL
 BEGIN
 /*
 Ing. Ángel Piña Viveros
@@ -68,17 +167,100 @@ Agregar productos al carrito de compras*/
 SET @stock=0;
 set @precio=0;
 set @id=0;
+SET @codigo=0;
+set @descu=0;
+SET @desc=0;
 SELECT stock INTO @stock FROM productos WHERE id=idpro;
 SELECT precio_venta INTO @precio FROM productos WHERE id=idpro;
 SELECT MAX(id) INTO @id FROM carrito_compra;
+SELECT codigo INTO @codigo FROM productos WHERE id=idpro;
+SELECT (SELECT descuento FROM descuentos WHERE id=id_descuento) INTO @desc FROM clientes WHERE ife=membrecia;
+
 START TRANSACTION;
+IF(membrecia>0)THEN
 IF (@stock=0)THEN
-SELECT 'No hay producto' AS msj;
+SELECT 'No hay productooo' AS msj;
 ROLLBACK;
 ELSE
 IF EXISTS(SELECT carrito_id_producto FROM carrito_compra WHERE carrito_id_producto=idpro)THEN
+IF(@codigo='1' OR @codigo='1000' OR @codigo='1002' OR @codigo='1003' OR @codigo='1004')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion; 
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precioDes WHERE carrito_id_producto=idpro AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+SELECT 'ok 1' AS msj;
+COMMIT;
+
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precioDes WHERE carrito_id_producto=idpro AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-1 WHERE id=idpro;
+COMMIT;
+SELECT 'ok' AS msj;
+END IF;
+
+ELSE
+IF(@codigo='1' OR @codigo='1000' OR @codigo='1002' OR @codigo='1003' OR @codigo='1004')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+INSERT INTO carrito_compra VALUES(@id+1,idpro,@precioDes,1,@precioDes,idusu);
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+INSERT INTO carrito_compra VALUES(@id+1,idpro,@precioDes,1,@precioDes,idusu);
+UPDATE productos SET stock=stock-1 WHERE id=idpro;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+END IF;
+END IF;
+
+/*Sin membrecia*/
+ELSE
+IF (@stock=0)THEN
+SELECT 'No hay product' AS msj;
+ROLLBACK;
+ELSE
+IF EXISTS(SELECT carrito_id_producto FROM carrito_compra WHERE carrito_id_producto=idpro)THEN
+IF(@codigo='1' OR @codigo='1000' OR @codigo='1002' OR @codigo='1003' OR @codigo='1004')THEN
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precio WHERE carrito_id_producto=idpro AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+COMMIT;
+
+ELSE
 UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precio WHERE carrito_id_producto=idpro AND carrito_vendedor=idusu;
 UPDATE productos SET stock=stock-1 WHERE id=idpro;
+COMMIT;
+END IF;
+
+ELSE
+IF(@codigo='1' OR @codigo='1000' OR @codigo='1002' OR @codigo='1003' OR @codigo='1004')THEN
+INSERT INTO carrito_compra VALUES(@id+1,idpro,@precio,1,@precio,idusu);
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
 COMMIT;
 ELSE
 INSERT INTO carrito_compra VALUES(@id+1,idpro,@precio,1,@precio,idusu);
@@ -86,9 +268,119 @@ UPDATE productos SET stock=stock-1 WHERE id=idpro;
 COMMIT;
 END IF;
 END IF;
+END IF;
+END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `elimina_agregar` (IN `produc` INT, IN `vendedor` INT, IN `pregunta` TEXT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `coleccionDeVenta` (IN `idU` INT)  NO SQL
+BEGIN
+/*Ing. Ángel Piña Viveros
+Mostrar los productos a vender*/
+
+START TRANSACTION;
+SELECT c.carrito_costo,p.codigo,p.descripcion,c.cantidad,c.carrito_total FROM productos p JOIN carrito_compra c ON c.carrito_id_producto=p.id WHERE c.carrito_vendedor=idU;
+
+COMMIT;
+
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ConcretarVenta` (IN `vendedor` INT, IN `produc` TEXT, IN `membrecia` INT)  NO SQL
+BEGIN
+/*Ing. Ángel PV
+Concretar venta de los productos
+*/
+set @id=0;
+set @cliente=0;
+set @codigo=0;
+SET @total=0;
+set @fecha=NOW();
+SET @idCli=0;
+
+SELECT MAX(id) INTO @id FROM ventas;
+SELECT MAX(codigo) INTO @codigo FROM ventas;
+SELECT SUM(carrito_total) INTO @total FROM carrito_compra WHERE carrito_vendedor=vendedor;
+SELECT id INTO @idCli FROM clientes WHERE ife=membrecia;
+
+START TRANSACTION;
+IF(membrecia>0)THEN
+IF EXISTS(SELECT * FROM ventas)THEN
+INSERT INTO ventas VALUES(@id+1,@codigo+1,@idCli,vendedor,produc,@total,@fecha);
+UPDATE clientes SET compras=compras+1 WHERE id=@idCli;
+DELETE FROM carrito_compra WHERE carrito_vendedor=vendedor;
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+INSERT INTO ventas VALUES(@id+1,1000,@idCli,vendedor,produc,@total,@fecha);
+UPDATE clientes SET compras=compras+1 WHERE id=@idCli;
+DELETE FROM carrito_compra WHERE carrito_vendedor=vendedor;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+
+/*Sin Membrecia*/
+ELSE
+IF EXISTS(SELECT * FROM ventas)THEN
+INSERT INTO ventas VALUES(@id+1,@codigo+1,@cliente,vendedor,produc,@total,@fecha);
+DELETE FROM carrito_compra WHERE carrito_vendedor=vendedor;
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+INSERT INTO ventas VALUES(@id+1,1000,@cliente,vendedor,produc,@total,@fecha);
+DELETE FROM carrito_compra WHERE carrito_vendedor=vendedor;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `eliminarVenta` (IN `idVenta` INT, IN `eliminarProdVen` INT, IN `producCodi` TEXT)  NO SQL
+BEGIN
+/*Ing Ángel Piña Viveros 
+Eliminar venta*/
+SET @idCliente=0;
+SELECT id_cliente INTO @idCliente FROM ventas WHERE id=idVenta;
+
+START TRANSACTION;
+IF(@idCliente=0)THEN
+UPDATE productos SET ventas=ventas-eliminarProdVen, stock=stock+eliminarProdVen WHERE codigo=producCodi;
+SELECT 'ok' msj;
+COMMIT;
+ELSE
+UPDATE productos SET ventas=ventas-eliminarProdVen, stock=stock+eliminarProdVen WHERE codigo=producCodi;
+SELECT 'ok' msj;
+COMMIT;
+END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `eliminatPorMayoreo` (IN `idProducto` TEXT, IN `vendedor` INT, IN `cantidad` INT)  NO SQL
+BEGIN
+/*
+Ing. Ángel Piña Viveros
+Eliminar producto por mayoreo
+*/
+set @id=0;
+SELECT id INTO @id FROM productos WHERE codigo=idProducto;
+START TRANSACTION;
+IF(idProducto='1000' OR idProducto='1002' OR  idProducto='1003' OR  idProducto='1004' OR  idProducto='1')THEN 
+UPDATE productos SET stock=stock+cantidad WHERE codigo='1000';
+UPDATE productos SET stock=stock+cantidad WHERE codigo='1';
+UPDATE productos SET stock=stock+cantidad WHERE codigo='1002';
+UPDATE productos SET stock=stock+cantidad WHERE codigo='1003';
+UPDATE productos SET stock=stock+cantidad WHERE codigo='1004';
+DELETE FROM carrito_compra WHERE carrito_id_producto=@id AND carrito_vendedor=vendedor;
+SELECT 'elimina hojas' AS msj;
+COMMIT;
+ELSE
+
+UPDATE productos SET stock=stock+cantidad WHERE id=@id; 
+DELETE FROM carrito_compra WHERE carrito_id_producto=@id AND carrito_vendedor=vendedor;
+SELECT 'eliminado' AS msj;
+COMMIT;
+END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `elimina_agregar` (IN `produc` INT, IN `vendedor` INT, IN `pregunta` TEXT, IN `membrecia` INT)  NO SQL
 BEGIN
 /*
 Ing. Ángel Piña Viveros
@@ -96,14 +388,36 @@ Eliminar o agregar al carrito de compras
 */
 SET @precio=0;
 SET @catidad=0;
+SET @codi=0;
+SET @desc=0;
 SELECT precio_venta INTO @precio FROM productos WHERE id=produc;
 SELECT cantidad INTO @cantidad FROM carrito_compra WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+SELECT codigo INTO @codi FROM productos WHERE id=produc;
+SELECT (SELECT descuento FROM descuentos WHERE id=id_descuento) INTO @desc FROM clientes WHERE ife=membrecia;
 
 START TRANSACTION;
 IF(pregunta='eliminar')THEN
-UPDATE carrito_compra SET cantidad=cantidad-1, carrito_total=carrito_total-@precio WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+IF(membrecia>0)THEN
+IF(@codi='1000' OR @codi='1002' OR @codi='1003' OR @codi='1004' OR @codi='1')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+UPDATE carrito_compra SET cantidad=cantidad-1, carrito_total=carrito_total-@precioDes WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+UPDATE productos SET stock=stock+1 WHERE codigo='1';
+UPDATE productos SET stock=stock+1 WHERE codigo='1000';
+UPDATE productos SET stock=stock+1 WHERE codigo='1002';
+UPDATE productos SET stock=stock+1 WHERE codigo='1003';
+UPDATE productos SET stock=stock+1 WHERE codigo='1004';
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+UPDATE carrito_compra SET cantidad=cantidad-1, carrito_total=carrito_total-@precioDes WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
 UPDATE productos SET stock=stock+1 WHERE id=produc;
 COMMIT;
+END IF;
+
 IF(@cantidad=1)THEN
 DELETE FROM carrito_compra WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
 COMMIT;
@@ -111,11 +425,69 @@ ELSE
 SELECT 'No se hace nada' AS msj;
 COMMIT;
 END IF;
+/*Sin membrecia*/
+ELSE
+IF(@codi='1000' OR @codi='1002' OR @codi='1003' OR @codi='1004' OR @codi='1')THEN
+UPDATE carrito_compra SET cantidad=cantidad-1, carrito_total=carrito_total-@precio WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+UPDATE productos SET stock=stock+1 WHERE codigo='1';
+UPDATE productos SET stock=stock+1 WHERE codigo='1000';
+UPDATE productos SET stock=stock+1 WHERE codigo='1002';
+UPDATE productos SET stock=stock+1 WHERE codigo='1003';
+UPDATE productos SET stock=stock+1 WHERE codigo='1004';
+COMMIT;
+ELSE
+UPDATE carrito_compra SET cantidad=cantidad-1, carrito_total=carrito_total-@precio WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+UPDATE productos SET stock=stock+1 WHERE id=produc;
+COMMIT;
+END IF;
 
+IF(@cantidad=1)THEN
+DELETE FROM carrito_compra WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+COMMIT;
+ELSE
+SELECT 'No se hace nada' AS msj;
+COMMIT;
+END IF;
+END IF;
+
+ELSE
+IF(membrecia>0)THEN
+IF(@codi='1000' OR @codi='1002' OR @codi='1003' OR @codi='1004' OR @codi='1')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precioDes WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precioDes WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+UPDATE productos SET stock=stock-1 WHERE id=produc;
+COMMIT;
+END IF;
+
+/*Sin Membrecia*/
+ELSE
+IF(@codi='1000' OR @codi='1002' OR @codi='1003' OR @codi='1004' OR @codi='1')THEN
+UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precio WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
+UPDATE productos SET stock=stock-1 WHERE codigo='1';
+UPDATE productos SET stock=stock-1 WHERE codigo='1000';
+UPDATE productos SET stock=stock-1 WHERE codigo='1002';
+UPDATE productos SET stock=stock-1 WHERE codigo='1003';
+UPDATE productos SET stock=stock-1 WHERE codigo='1004';
+COMMIT;
 ELSE
 UPDATE carrito_compra SET cantidad=cantidad+1, carrito_total=carrito_total+@precio WHERE carrito_id_producto=produc AND carrito_vendedor=vendedor;
 UPDATE productos SET stock=stock-1 WHERE id=produc;
 COMMIT;
+END IF;
+END IF;
 END IF;
 END$$
 
@@ -125,11 +497,128 @@ BEGIN
 Mostrar los productos a vender*/
 
 START TRANSACTION;
-SELECT p.stock,p.codigo,p.descripcion,p.precio_venta,c.cantidad,c.carrito_total, c.carrito_vendedor,c.carrito_id_producto FROM productos p JOIN carrito_compra c ON c.carrito_id_producto=p.id WHERE c.carrito_vendedor=idU;
+SELECT p.stock,p.codigo,p.descripcion,c.carrito_costo,c.cantidad,c.carrito_total, c.carrito_vendedor,c.carrito_id_producto FROM productos p JOIN carrito_compra c ON c.carrito_id_producto=p.id WHERE c.carrito_vendedor=idU;
 
 COMMIT;
 
 
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ventaPorMayoreo` (IN `idpro` TEXT, IN `cantidadPro` INT, IN `total` FLOAT, IN `idusu` INT, IN `membrecia` INT)  NO SQL
+BEGIN 
+/*Ing. Ángel PV
+Vender Producto por mayoreo*/
+SET @stock=0;
+SET @precioV=0;
+SET @id=0;
+SET @idproduc=0;
+SET @desc=0;
+SELECT id INTO @idproduc FROM productos WHERE codigo=idpro;
+SELECT stock INTO @stock FROM productos WHERE codigo=idpro;
+SELECT precio_venta INTO @precio FROM productos WHERE codigo=idpro;
+SELECT MAX(id) INTO @id FROM carrito_compra;
+SELECT (SELECT descuento FROM descuentos WHERE id=id_descuento) INTO @desc FROM clientes WHERE ife=membrecia;
+
+START TRANSACTION;
+IF(membrecia>0)THEN
+IF(cantidadPro>@stock)THEN
+SELECT 'insuficiente' AS msj;
+ROLLBACK;
+ELSE
+IF(SELECT carrito_id_producto FROM carrito_compra WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu)THEN
+IF(idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004' OR idpro='1')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+set @descuTotal=@precioDes*cantidadPro;
+UPDATE carrito_compra SET cantidad=cantidad+cantidadPro, carrito_total=carrito_total+@descuTotal WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1000';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1002';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1003';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+set @descuTotal=@precioDes*cantidadPro;
+UPDATE carrito_compra SET cantidad=cantidad+cantidadPro, carrito_total=carrito_total+@descuTotal WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+
+ELSE
+IF(idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004' OR idpro='1')THEN
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+set @descuTotal=@precioDes*cantidadPro;
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@precioDes,cantidadPro,@descuTotal,idusu);
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1000';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1002';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1003';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+SET @porcentaje=@desc/100;
+SET @multiplicacion= @precio*@porcentaje;
+SET @precioDes=@precio-@multiplicacion;
+set @descuTotal=@precioDes*cantidadPro;
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@precioDes,cantidadPro,@descuTotal,idusu);
+UPDATE productos SET stock=stock-cantidadPro WHERE id=@idproduc;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+END IF;
+END IF;
+/*Sin Membrecia*/
+ELSE
+IF(cantidadPro>@stock)THEN
+SELECT 'insuficiente' AS msj;
+ROLLBACK;
+ELSE
+IF(SELECT carrito_id_producto FROM carrito_compra WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu)THEN
+IF(idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004' OR idpro='1')THEN
+UPDATE carrito_compra SET cantidad=cantidad+cantidadPro, carrito_total=carrito_total+total WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1000';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1002';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1003';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+UPDATE carrito_compra SET cantidad=cantidad+cantidadPro, carrito_total=carrito_total+total WHERE carrito_id_producto=@idproduc AND carrito_vendedor=idusu;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+
+ELSE
+IF(idpro='1000' OR idpro='1002' OR idpro='1003' OR idpro='1004' OR idpro='1')THEN
+SET @rebajaPrecio=total/cantidadPro;
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@rebajaPrecio,cantidadPro,total,idusu);
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1000';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1002';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1003';
+UPDATE productos SET stock=stock-cantidadPro WHERE codigo='1004';
+SELECT 'ok' AS msj;
+COMMIT;
+ELSE
+SET @rebajaPrecio=total/cantidadPro;
+INSERT INTO carrito_compra VALUES(@id+1,@idproduc,@rebajaPrecio,cantidadPro,total,idusu);
+UPDATE productos SET stock=stock-cantidadPro WHERE id=@idproduc;
+SELECT 'ok' AS msj;
+COMMIT;
+END IF;
+END IF;
+END IF;
+
+END IF;
 END$$
 
 DELIMITER ;
@@ -166,12 +655,31 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id`, `categoria`, `fecha`) VALUES
-(1, 'Equipos Electromecánicos', '2017-12-21 20:53:29'),
-(2, 'Taladros', '2017-12-21 20:53:29'),
-(3, 'Andamios', '2017-12-21 20:53:29'),
-(4, 'Generadores de energía', '2017-12-21 20:53:29'),
-(5, 'Equipos para construcción', '2017-12-21 20:53:29'),
-(6, 'Martillos mecánicos', '2017-12-21 23:06:40');
+(7, 'Libretas', '2019-04-18 23:54:24'),
+(8, 'Lapiceros', '2019-04-18 23:54:33'),
+(9, 'Hojas Blancas', '2019-04-20 23:08:27'),
+(10, 'Hojas De Colores', '2019-04-20 23:23:43'),
+(11, 'Copias', '2019-04-21 00:48:48'),
+(12, 'Impresiones', '2019-04-21 00:49:16'),
+(13, 'reglas', '2019-05-02 20:25:15'),
+(14, 'plumon', '2019-05-02 20:30:16'),
+(15, 'Marcador', '2019-05-02 20:35:55'),
+(16, 'Lapiz', '2019-05-02 20:39:54'),
+(17, 'notas adhesivas', '2019-05-02 21:03:00'),
+(18, 'Pintura Acrilica', '2019-05-02 21:07:15'),
+(19, 'pincel', '2019-05-02 21:24:37'),
+(20, 'puntillas', '2019-05-02 21:29:53'),
+(21, 'clip', '2019-05-02 21:34:55'),
+(22, 'resistol ', '2019-05-02 21:52:05'),
+(23, 'Borrador', '2019-05-02 22:17:11'),
+(24, 'Calculadora', '2019-05-02 22:26:12'),
+(25, 'Gises', '2019-05-02 22:26:34'),
+(26, 'Diamantina', '2019-05-02 23:45:17'),
+(27, 'Colores', '2019-05-02 23:42:32'),
+(28, 'Grapas', '2019-05-03 00:15:33'),
+(29, 'Cuter', '2019-05-03 00:22:04'),
+(30, 'Tintas', '2019-05-03 00:24:23'),
+(31, 'Sellos', '2019-05-03 00:28:03');
 
 -- --------------------------------------------------------
 
@@ -181,13 +689,11 @@ INSERT INTO `categorias` (`id`, `categoria`, `fecha`) VALUES
 
 CREATE TABLE `clientes` (
   `id` int(11) NOT NULL,
+  `ife` int(11) NOT NULL,
   `id_descuento` int(11) NOT NULL,
   `nombre` text COLLATE utf8_spanish_ci NOT NULL,
-  `documento` int(11) NOT NULL,
   `email` text COLLATE utf8_spanish_ci NOT NULL,
   `telefono` text COLLATE utf8_spanish_ci NOT NULL,
-  `direccion` text COLLATE utf8_spanish_ci NOT NULL,
-  `fecha_nacimiento` date NOT NULL,
   `compras` int(11) NOT NULL,
   `ultima_compra` datetime NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -197,8 +703,8 @@ CREATE TABLE `clientes` (
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `id_descuento`, `nombre`, `documento`, `email`, `telefono`, `direccion`, `fecha_nacimiento`, `compras`, `ultima_compra`, `fecha`) VALUES
-(13, 1, 'yoni', 0, 'yoni@gmail.com', '(758) 108-4911', '', '0000-00-00', 0, '0000-00-00 00:00:00', '2019-03-24 00:40:46');
+INSERT INTO `clientes` (`id`, `ife`, `id_descuento`, `nombre`, `email`, `telefono`, `compras`, `ultima_compra`, `fecha`) VALUES
+(15, 95046074, 1, 'Juan Villega', 'angelpiviveros@gmai.com', '(755) 117-7573', 0, '2019-05-05 19:11:18', '2019-05-12 19:36:15');
 
 -- --------------------------------------------------------
 
@@ -217,7 +723,7 @@ CREATE TABLE `descuentos` (
 --
 
 INSERT INTO `descuentos` (`id`, `nombre`, `descuento`) VALUES
-(1, 'plata', 10);
+(1, 'plata', 40);
 
 -- --------------------------------------------------------
 
@@ -243,65 +749,31 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `id_categoria`, `codigo`, `descripcion`, `imagen`, `stock`, `precio_compra`, `precio_venta`, `ventas`, `fecha`) VALUES
-(1, 1, '101', 'Aspiradora Industrial ', 'vistas/img/productos/101/105.png', 33, 1000, 1200, 2, '2019-04-18 17:49:44'),
-(2, 1, '102', 'Plato Flotante para Allanadora', 'vistas/img/productos/102/940.jpg', 6, 4500, 6300, 3, '2019-03-28 05:48:51'),
-(3, 1, '103', 'Compresor de Aire para pintura', 'vistas/img/productos/103/763.jpg', 8, 3000, 4200, 12, '2019-03-24 23:08:10'),
-(4, 1, '104', 'Cortadora de Adobe sin Disco ', 'vistas/img/productos/104/957.jpg', 16, 4000, 5600, 4, '2017-12-26 15:03:22'),
-(5, 1, '105', 'Cortadora de Piso sin Disco ', 'vistas/img/productos/105/630.jpg', 13, 1540, 2156, 7, '2017-12-26 15:03:22'),
-(6, 1, '106', 'Disco Punta Diamante ', 'vistas/img/productos/106/635.jpg', 15, 1100, 1540, 5, '2017-12-26 15:04:38'),
-(7, 1, '107', 'Extractor de Aire ', 'vistas/img/productos/107/848.jpg', 12, 1540, 2156, 8, '2017-12-26 15:04:11'),
-(8, 1, '108', 'Guadañadora ', 'vistas/img/productos/108/163.jpg', 13, 1540, 2156, 7, '2017-12-26 15:03:52'),
-(9, 1, '109', 'Hidrolavadora Eléctrica ', 'vistas/img/productos/109/769.jpg', 15, 2600, 3640, 5, '2017-12-26 15:05:09'),
-(10, 1, '110', 'Hidrolavadora Gasolina', 'vistas/img/productos/110/582.jpg', 18, 2210, 3094, 2, '2017-12-26 15:05:09'),
-(11, 1, '111', 'Motobomba a Gasolina', 'vistas/img/productos/default/anonymous.png', 20, 2860, 4004, 0, '2019-03-28 05:39:16'),
-(12, 1, '112', 'Motobomba El?ctrica', 'vistas/img/productos/default/anonymous.png', 20, 2400, 3360, 0, '2019-03-28 05:39:15'),
-(13, 1, '113', 'Sierra Circular ', 'vistas/img/productos/default/anonymous.png', 20, 1100, 1540, 0, '2017-12-21 21:56:28'),
-(14, 1, '114', 'Disco de tugsteno para Sierra circular', 'vistas/img/productos/default/anonymous.png', 20, 4500, 6300, 0, '2017-12-21 21:56:28'),
-(15, 1, '115', 'Soldador Electrico ', 'vistas/img/productos/default/anonymous.png', 20, 1980, 2772, 0, '2017-12-21 21:56:28'),
-(16, 1, '116', 'Careta para Soldador', 'vistas/img/productos/default/anonymous.png', 20, 4200, 5880, 0, '2017-12-21 21:56:28'),
-(17, 1, '117', 'Torre de iluminacion ', 'vistas/img/productos/default/anonymous.png', 20, 1800, 2520, 0, '2017-12-21 21:56:28'),
-(18, 2, '201', 'Martillo Demoledor de Piso 110V', 'vistas/img/productos/default/anonymous.png', 20, 5600, 7840, 0, '2017-12-21 21:56:28'),
-(19, 2, '202', 'Muela o cincel martillo demoledor piso', 'vistas/img/productos/default/anonymous.png', 20, 9600, 13440, 0, '2017-12-21 21:56:28'),
-(20, 2, '203', 'Taladro Demoledor de muro 110V', 'vistas/img/productos/default/anonymous.png', 20, 3850, 5390, 0, '2019-03-24 23:01:26'),
-(21, 2, '204', 'Muela o cincel martillo demoledor muro', 'vistas/img/productos/default/anonymous.png', 20, 9600, 13440, 0, '2017-12-21 21:56:28'),
-(22, 2, '205', 'Taladro Percutor de 1/2 Madera y Metal', 'vistas/img/productos/default/anonymous.png', 20, 8000, 11200, 0, '2017-12-21 22:28:24'),
-(23, 2, '206', 'Taladro Percutor SDS Plus 110V', 'vistas/img/productos/default/anonymous.png', 20, 3900, 5460, 0, '2017-12-21 21:56:28'),
-(24, 2, '207', 'Taladro Percutor SDS Max 110V (Mineria)', 'vistas/img/productos/default/anonymous.png', 20, 4600, 6440, 0, '2017-12-21 21:56:28'),
-(25, 3, '301', 'Andamio colgante', 'vistas/img/productos/default/anonymous.png', 20, 1440, 2016, 0, '2019-03-24 23:02:37'),
-(26, 3, '302', 'Distanciador andamio colgante', 'vistas/img/productos/default/anonymous.png', 20, 1600, 2240, 0, '2017-12-21 21:56:28'),
-(27, 3, '303', 'Marco andamio modular ', 'vistas/img/productos/default/anonymous.png', 20, 900, 1260, 0, '2017-12-21 21:56:28'),
-(28, 3, '304', 'Marco andamio tijera', 'vistas/img/productos/default/anonymous.png', 20, 100, 140, 0, '2017-12-21 21:56:28'),
-(29, 3, '305', 'Tijera para andamio', 'vistas/img/productos/default/anonymous.png', 20, 162, 226, 0, '2017-12-21 21:56:28'),
-(30, 3, '306', 'Escalera interna para andamio', 'vistas/img/productos/default/anonymous.png', 20, 270, 378, 0, '2017-12-21 21:56:28'),
-(31, 3, '307', 'Pasamanos de seguridad', 'vistas/img/productos/default/anonymous.png', 20, 75, 105, 0, '2019-03-24 23:01:13'),
-(32, 3, '308', 'Rueda giratoria para andamio', 'vistas/img/productos/default/anonymous.png', 20, 168, 235, 0, '2017-12-21 21:56:28'),
-(33, 3, '309', 'Arnes de seguridad', 'vistas/img/productos/default/anonymous.png', 20, 1750, 2450, 0, '2019-03-24 23:01:24'),
-(34, 3, '310', 'Eslinga para arnes', 'vistas/img/productos/default/anonymous.png', 20, 175, 245, 0, '2019-03-24 23:01:29'),
-(35, 3, '311', 'Plataforma Met?lica', 'vistas/img/productos/default/anonymous.png', 20, 420, 588, 0, '2017-12-21 21:56:28'),
-(36, 4, '401', 'Planta Electrica Diesel 6 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3500, 4900, 0, '2017-12-21 21:56:28'),
-(37, 4, '402', 'Planta Electrica Diesel 10 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3550, 4970, 0, '2017-12-21 21:56:28'),
-(38, 4, '403', 'Planta Electrica Diesel 20 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3600, 5040, 0, '2017-12-21 21:56:28'),
-(39, 4, '404', 'Planta Electrica Diesel 30 Kva', 'vistas/img/productos/default/anonymous.png', 21, 3650, 5110, 0, '2019-03-24 23:01:27'),
-(40, 4, '405', 'Planta Electrica Diesel 60 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3700, 5180, 0, '2017-12-21 21:56:28'),
-(41, 4, '406', 'Planta Electrica Diesel 75 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3750, 5250, 0, '2017-12-21 21:56:28'),
-(42, 4, '407', 'Planta Electrica Diesel 100 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3800, 5320, 0, '2017-12-21 21:56:28'),
-(43, 4, '408', 'Planta Electrica Diesel 120 Kva', 'vistas/img/productos/default/anonymous.png', 20, 3850, 5390, 0, '2017-12-21 21:56:28'),
-(44, 5, '501', 'Escalera de Tijera Aluminio ', 'vistas/img/productos/default/anonymous.png', 20, 350, 490, 0, '2019-03-24 23:01:14'),
-(45, 5, '502', 'Extension Electrica ', 'vistas/img/productos/default/anonymous.png', 20, 370, 518, 0, '2017-12-21 21:56:28'),
-(46, 5, '503', 'Gato tensor', 'vistas/img/productos/default/anonymous.png', 20, 380, 532, 0, '2017-12-21 21:56:28'),
-(47, 5, '504', 'Lamina Cubre Brecha ', 'vistas/img/productos/default/anonymous.png', 20, 380, 532, 0, '2019-04-17 01:21:43'),
-(48, 5, '505', 'Llave de Tubo', 'vistas/img/productos/default/anonymous.png', 20, 480, 672, 0, '2017-12-21 21:56:28'),
-(49, 5, '506', 'Manila por Metro', 'vistas/img/productos/default/anonymous.png', 20, 600, 840, 0, '2017-12-21 21:56:28'),
-(50, 5, '507', 'Polea 2 canales', 'vistas/img/productos/default/anonymous.png', 20, 900, 1260, 0, '2017-12-21 21:56:28'),
-(52, 5, '509', 'Bascula ', 'vistas/img/productos/509/878.jpg', 12, 130, 182, 8, '2017-12-26 22:26:51'),
-(53, 5, '510', 'Bomba Hidrostatica', 'vistas/img/productos/510/870.jpg', 8, 770, 1078, 12, '2017-12-26 22:26:51'),
-(54, 5, '511', 'Chapeta', 'vistas/img/productos/511/239.jpg', 16, 660, 924, 4, '2017-12-26 22:27:42'),
-(55, 5, '512', 'Cilindro muestra de concreto', 'vistas/img/productos/512/266.jpg', 16, 400, 560, 4, '2017-12-26 22:27:41'),
-(56, 5, '513', 'Cizalla de Palanca', 'vistas/img/productos/513/445.jpg', 3, 450, 630, 17, '2017-12-27 00:30:12'),
-(57, 5, '514', 'Cizalla de Tijera', 'vistas/img/productos/514/249.jpg', 20, 580, 812, 13, '2017-12-27 04:29:22'),
-(58, 5, '515', 'Coche llanta neumatica', 'vistas/img/productos/515/174.jpg', 17, 420, 588, 3, '2017-12-27 00:30:12'),
-(59, 5, '516', 'Cono slump', 'vistas/img/productos/516/228.jpg', 15, 140, 196, 5, '2018-02-06 22:47:02'),
-(60, 5, '517', 'Cortadora de Baldosin', 'vistas/img/productos/517/746.jpg', 13, 930, 1302, 7, '2018-02-06 22:47:02');
+(63, 9, '1', 'Hojas blancas', 'vistas/img/productos/default/anonymous.png', 16, 0.5, 1, 0, '2019-05-03 19:37:37'),
+(65, 11, '1000', 'Copias B/N', 'vistas/img/productos/default/anonymous.png', 16, 0.18, 1, 0, '2019-05-03 19:37:37'),
+(66, 11, '1002', 'Copias Color', 'vistas/img/productos/default/anonymous.png', 16, 1.18, 3, 0, '2019-05-03 19:37:37'),
+(67, 12, '1003', 'Imprecion B/N', 'vistas/img/productos/default/anonymous.png', 16, 0.18, 1, 0, '2019-05-03 19:37:37'),
+(68, 12, '1004', 'Imprecion Color', 'vistas/img/productos/default/anonymous.png', 16, 1.18, 3, 0, '2019-05-03 19:37:37'),
+(71, 8, '7501014511054', 'Escritura fina azul', 'vistas/img/productos/default/anonymous.png', 130, 3, 5, 0, '2019-05-12 19:36:15'),
+(72, 8, '7501014511061', 'Escritura fina Negro', 'vistas/img/productos/default/anonymous.png', 25, 3, 5, 0, '2019-05-12 19:59:03'),
+(73, 8, '7501014511078', 'Escritura fina Rojo', 'vistas/img/productos/default/anonymous.png', 225, 3, 5, 0, '2010-12-15 19:55:32'),
+(74, 8, '7703486035315', 'Boligrafo Paper Mate azul', 'vistas/img/productos/default/anonymous.png', 1, 3, 4, 0, '2019-05-02 20:21:51'),
+(75, 8, '070330198937', 'Escritura Ultra Fina Azul', 'vistas/img/productos/default/anonymous.png', 78, 4, 6, 0, '2010-12-15 20:03:05'),
+(76, 8, '070330198920', 'Escritura Ultra Fina Negro', 'vistas/img/productos/default/anonymous.png', 155, 4, 6, 0, '2010-12-15 19:57:43'),
+(77, 8, '7703486035551', 'Boligrafo Paper Mate Verde', 'vistas/img/productos/default/anonymous.png', 1, 3, 4, 0, '2019-05-02 20:34:45'),
+(78, 13, '7503002648049', 'Regla de 30 cm', 'vistas/img/productos/default/anonymous.png', 29, 1, 6, 0, '2019-05-12 19:28:46'),
+(80, 13, '7501174990805', 'Escalimetro', 'vistas/img/productos/default/anonymous.png', 4, 31, 44, 0, '2019-05-12 19:36:00'),
+(81, 13, '7501214963165', 'Regla de 30 cm Barrilito', 'vistas/img/productos/default/anonymous.png', 5, 1, 7, 0, '2019-05-02 20:28:17'),
+(82, 13, '7503002648865', 'Transportadores', 'vistas/img/productos/default/anonymous.png', 5, 2, 8, 0, '2019-05-12 17:38:04'),
+(83, 14, '5401178076388', 'Sharpie punta fina rojo', 'vistas/img/productos/default/anonymous.png', 2, 10, 13, 0, '2019-05-02 20:31:30'),
+(84, 14, '5401178076364', 'Sharpie punta fina Azul', 'vistas/img/productos/default/anonymous.png', 5, 10, 13, 0, '2019-05-02 21:43:32'),
+(85, 14, '5401178324311', 'Sharpie punta fina Negro twin', 'vistas/img/productos/default/anonymous.png', 5, 10, 22, 0, '2019-05-02 20:33:37'),
+(86, 15, '7501030665670', 'Marcador de cera sharpie negro', 'vistas/img/productos/default/anonymous.png', 5, 10, 13, 0, '2019-05-02 20:37:17'),
+(87, 15, '7501147480104', 'Marcador de cera dixon Azul', 'vistas/img/productos/default/anonymous.png', 19, 10, 13, 0, '2019-05-12 18:42:44'),
+(88, 15, '7501147475100', 'Marcador de cera dixon Rojo', 'vistas/img/productos/default/anonymous.png', 20, 10, 13, 0, '2019-05-02 21:45:22'),
+(89, 16, '7502265163085', 'llapiz duo mae', 'vistas/img/productos/default/anonymous.png', 100, 5, 8, 0, '2019-05-02 20:56:16'),
+(90, 16, '3154148517214', 'lapiz blackpeps', 'vistas/img/productos/default/anonymous.png', 126, 2, 5, 0, '2010-12-15 15:59:47'),
+(91, 16, '3086123275317', 'lápiz evolution', 'vistas/img/productos/default/anonymous.png', 24, 4, 6, 0, '2010-12-15 16:02:40');
 
 -- --------------------------------------------------------
 
@@ -329,8 +801,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `telefono`, `direccion`, `email`, `usuario`, `password`, `perfil`, `foto`, `estado`, `ultimo_login`, `fecha`) VALUES
-(60, 'angel piña viveros', '(755) 117-7573', 'null', 'angel@gmail.com', 'angel', '$2a$07$asxx54ahjppf45sd87a5auI.w1Ked9scYx2Nf.LKXcqEaa6/D8OoG', 'Super Administrador', '', 1, '2019-04-18 12:48:40', '2019-04-18 17:48:40'),
-(61, 'JUAN', '(777) 899 ', 'null', 'JUAN@gmail.com', 'JUAN', '$2a$07$asxx54ahjppf45sd87a5au.U/M0caGNRi1j0bgxZqVwBDctNLt11O', 'Vendedor', '', 0, '0000-00-00 00:00:00', '2019-03-23 17:47:52');
+(60, 'angel piña viveros', '(755) 117-7573', 'null', 'angel@gmail.com', 'angel', '$2a$07$asxx54ahjppf45sd87a5auI.w1Ked9scYx2Nf.LKXcqEaa6/D8OoG', 'Super Administrador', '', 1, '2019-05-12 20:14:49', '2019-05-13 01:14:49'),
+(61, 'JUAN', '(758) 100 2195', 'null', 'JUAN@gmail.com', 'juanito', '$2a$07$asxx54ahjppf45sd87a5auwRi.z6UsW7kVIpm0CUEuCpmsvT2sG6O', 'Vendedor', '', 1, '2019-05-01 10:54:35', '2019-05-01 15:54:35');
 
 -- --------------------------------------------------------
 
@@ -344,39 +816,9 @@ CREATE TABLE `ventas` (
   `id_cliente` int(11) NOT NULL,
   `id_vendedor` int(11) NOT NULL,
   `productos` text COLLATE utf8_spanish_ci NOT NULL,
-  `impuesto` float NOT NULL,
-  `neto` float NOT NULL,
   `total` float NOT NULL,
-  `metodo_pago` text COLLATE utf8_spanish_ci NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
---
--- Volcado de datos para la tabla `ventas`
---
-
-INSERT INTO `ventas` (`id`, `codigo`, `id_cliente`, `id_vendedor`, `productos`, `impuesto`, `neto`, `total`, `metodo_pago`, `fecha`) VALUES
-(17, 10001, 3, 1, '[{\"id\":\"1\",\"descripcion\":\"Aspiradora Industrial \",\"cantidad\":\"2\",\"stock\":\"13\",\"precio\":\"1200\",\"total\":\"2400\"},{\"id\":\"2\",\"descripcion\":\"Plato Flotante para Allanadora\",\"cantidad\":\"2\",\"stock\":\"7\",\"precio\":\"6300\",\"total\":\"12600\"},{\"id\":\"3\",\"descripcion\":\"Compresor de Aire para pintura\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"4200\",\"total\":\"4200\"}]', 3648, 19200, 22848, 'Efectivo', '2018-02-02 01:11:04'),
-(18, 10002, 4, 59, '[{\"id\":\"5\",\"descripcion\":\"Cortadora de Piso sin Disco \",\"cantidad\":\"2\",\"stock\":\"18\",\"precio\":\"2156\",\"total\":\"4312\"},{\"id\":\"4\",\"descripcion\":\"Cortadora de Adobe sin Disco \",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"5600\",\"total\":\"5600\"},{\"id\":\"6\",\"descripcion\":\"Disco Punta Diamante \",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"1540\",\"total\":\"1540\"},{\"id\":\"7\",\"descripcion\":\"Extractor de Aire \",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"2156\",\"total\":\"2156\"}]', 2585.52, 13608, 16193.5, 'TC-34346346346', '2018-02-02 14:57:20'),
-(19, 10003, 5, 59, '[{\"id\":\"8\",\"descripcion\":\"Guadañadora \",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"2156\",\"total\":\"2156\"},{\"id\":\"9\",\"descripcion\":\"Hidrolavadora Eléctrica \",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"3640\",\"total\":\"3640\"},{\"id\":\"7\",\"descripcion\":\"Extractor de Aire \",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"2156\",\"total\":\"2156\"}]', 1510.88, 7952, 9462.88, 'Efectivo', '2018-01-18 14:57:40'),
-(20, 10004, 5, 59, '[{\"id\":\"3\",\"descripcion\":\"Compresor de Aire para pintura\",\"cantidad\":\"5\",\"stock\":\"14\",\"precio\":\"4200\",\"total\":\"21000\"},{\"id\":\"4\",\"descripcion\":\"Cortadora de Adobe sin Disco \",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"5600\",\"total\":\"5600\"},{\"id\":\"5\",\"descripcion\":\"Cortadora de Piso sin Disco \",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"2156\",\"total\":\"2156\"}]', 5463.64, 28756, 34219.6, 'TD-454475467567', '2018-01-25 14:58:09'),
-(21, 10005, 6, 57, '[{\"id\":\"4\",\"descripcion\":\"Cortadora de Adobe sin Disco \",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"5600\",\"total\":\"5600\"},{\"id\":\"5\",\"descripcion\":\"Cortadora de Piso sin Disco \",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"2156\",\"total\":\"2156\"},{\"id\":\"3\",\"descripcion\":\"Compresor de Aire para pintura\",\"cantidad\":\"5\",\"stock\":\"9\",\"precio\":\"4200\",\"total\":\"21000\"}]', 5463.64, 28756, 34219.6, 'TC-6756856867', '2018-01-09 14:59:07'),
-(22, 10006, 10, 1, '[{\"id\":\"3\",\"descripcion\":\"Compresor de Aire para pintura\",\"cantidad\":\"1\",\"stock\":\"8\",\"precio\":\"4200\",\"total\":\"4200\"},{\"id\":\"4\",\"descripcion\":\"Cortadora de Adobe sin Disco \",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"5600\",\"total\":\"5600\"},{\"id\":\"5\",\"descripcion\":\"Cortadora de Piso sin Disco \",\"cantidad\":\"3\",\"stock\":\"13\",\"precio\":\"2156\",\"total\":\"6468\"},{\"id\":\"6\",\"descripcion\":\"Disco Punta Diamante \",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"1540\",\"total\":\"1540\"}]', 3383.52, 17808, 21191.5, 'Efectivo', '2018-01-26 15:03:22'),
-(23, 10007, 9, 1, '[{\"id\":\"6\",\"descripcion\":\"Disco Punta Diamante \",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"1540\",\"total\":\"1540\"},{\"id\":\"7\",\"descripcion\":\"Extractor de Aire \",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"2156\",\"total\":\"2156\"},{\"id\":\"8\",\"descripcion\":\"Guadañadora \",\"cantidad\":\"6\",\"stock\":\"13\",\"precio\":\"2156\",\"total\":\"12936\"},{\"id\":\"9\",\"descripcion\":\"Hidrolavadora Eléctrica \",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"3640\",\"total\":\"3640\"}]', 3851.68, 20272, 24123.7, 'TC-357547467346', '2017-11-30 15:03:53'),
-(24, 10008, 12, 1, '[{\"id\":\"2\",\"descripcion\":\"Plato Flotante para Allanadora\",\"cantidad\":\"1\",\"stock\":\"6\",\"precio\":\"6300\",\"total\":\"6300\"},{\"id\":\"7\",\"descripcion\":\"Extractor de Aire \",\"cantidad\":\"5\",\"stock\":\"12\",\"precio\":\"2156\",\"total\":\"10780\"},{\"id\":\"6\",\"descripcion\":\"Disco Punta Diamante \",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"1540\",\"total\":\"1540\"},{\"id\":\"9\",\"descripcion\":\"Hidrolavadora Eléctrica \",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"3640\",\"total\":\"3640\"}]', 4229.4, 22260, 26489.4, 'TD-35745575', '2017-12-25 15:04:11'),
-(25, 10009, 11, 1, '[{\"id\":\"10\",\"descripcion\":\"Hidrolavadora Gasolina\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"3094\",\"total\":\"3094\"},{\"id\":\"9\",\"descripcion\":\"Hidrolavadora Eléctrica \",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"3640\",\"total\":\"3640\"},{\"id\":\"6\",\"descripcion\":\"Disco Punta Diamante \",\"cantidad\":\"1\",\"stock\":\"15\",\"precio\":\"1540\",\"total\":\"1540\"}]', 1572.06, 8274, 9846.06, 'TD-5745745745', '2017-08-15 15:04:38'),
-(26, 10010, 8, 1, '[{\"id\":\"9\",\"descripcion\":\"Hidrolavadora Eléctrica \",\"cantidad\":\"1\",\"stock\":\"15\",\"precio\":\"3640\",\"total\":\"3640\"},{\"id\":\"10\",\"descripcion\":\"Hidrolavadora Gasolina\",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"3094\",\"total\":\"3094\"}]', 1279.46, 6734, 8013.46, 'Efectivo', '2017-12-07 15:05:09'),
-(27, 10011, 7, 1, '[{\"id\":\"60\",\"descripcion\":\"Cortadora de Baldosin\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"1302\",\"total\":\"1302\"},{\"id\":\"59\",\"descripcion\":\"Cono slump\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"196\",\"total\":\"196\"},{\"id\":\"58\",\"descripcion\":\"Coche llanta neumatica\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"588\",\"total\":\"588\"},{\"id\":\"57\",\"descripcion\":\"Cizalla de Tijera\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"812\",\"total\":\"812\"}]', 550.62, 2898, 3448.62, 'Efectivo', '2017-12-25 22:23:38'),
-(28, 10012, 12, 57, '[{\"id\":\"59\",\"descripcion\":\"Cono slump\",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"196\",\"total\":\"196\"},{\"id\":\"58\",\"descripcion\":\"Coche llanta neumatica\",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"588\",\"total\":\"588\"},{\"id\":\"54\",\"descripcion\":\"Chapeta\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"924\",\"total\":\"924\"},{\"id\":\"53\",\"descripcion\":\"Bomba Hidrostatica\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"1078\",\"total\":\"1078\"}]', 529.34, 2786, 3315.34, 'TC-3545235235', '2017-12-25 22:24:24'),
-(29, 10013, 11, 57, '[{\"id\":\"54\",\"descripcion\":\"Chapeta\",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"924\",\"total\":\"924\"},{\"id\":\"59\",\"descripcion\":\"Cono slump\",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"196\",\"total\":\"196\"},{\"id\":\"60\",\"descripcion\":\"Cortadora de Baldosin\",\"cantidad\":\"5\",\"stock\":\"14\",\"precio\":\"1302\",\"total\":\"6510\"}]', 1449.7, 7630, 9079.7, 'TC-425235235235', '2017-12-26 22:24:50'),
-(30, 10014, 10, 57, '[{\"id\":\"59\",\"descripcion\":\"Cono slump\",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"196\",\"total\":\"196\"},{\"id\":\"54\",\"descripcion\":\"Chapeta\",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"924\",\"total\":\"924\"},{\"id\":\"53\",\"descripcion\":\"Bomba Hidrostatica\",\"cantidad\":\"10\",\"stock\":\"9\",\"precio\":\"1078\",\"total\":\"10780\"}]', 2261, 11900, 14161, 'Efectivo', '2017-12-26 22:25:09'),
-(31, 10015, 9, 57, '[{\"id\":\"57\",\"descripcion\":\"Cizalla de Tijera\",\"cantidad\":\"3\",\"stock\":\"16\",\"precio\":\"812\",\"total\":\"2436\"}]', 462.84, 2436, 2898.84, 'Efectivo', '2017-12-26 22:25:33'),
-(32, 10016, 8, 57, '[{\"id\":\"58\",\"descripcion\":\"Coche llanta neumatica\",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"588\",\"total\":\"588\"},{\"id\":\"57\",\"descripcion\":\"Cizalla de Tijera\",\"cantidad\":\"5\",\"stock\":\"11\",\"precio\":\"812\",\"total\":\"4060\"},{\"id\":\"56\",\"descripcion\":\"Cizalla de Palanca\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"630\",\"total\":\"630\"}]', 1002.82, 5278, 6280.82, 'TD-4523523523', '2017-12-26 22:25:55'),
-(33, 10017, 7, 57, '[{\"id\":\"57\",\"descripcion\":\"Cizalla de Tijera\",\"cantidad\":\"4\",\"stock\":\"7\",\"precio\":\"812\",\"total\":\"3248\"},{\"id\":\"52\",\"descripcion\":\"Bascula \",\"cantidad\":\"3\",\"stock\":\"17\",\"precio\":\"182\",\"total\":\"546\"},{\"id\":\"55\",\"descripcion\":\"Cilindro muestra de concreto\",\"cantidad\":\"2\",\"stock\":\"18\",\"precio\":\"560\",\"total\":\"1120\"},{\"id\":\"56\",\"descripcion\":\"Cizalla de Palanca\",\"cantidad\":\"1\",\"stock\":\"18\",\"precio\":\"630\",\"total\":\"630\"}]', 1053.36, 5544, 6597.36, 'Efectivo', '2017-12-26 22:26:28'),
-(34, 10018, 6, 57, '[{\"id\":\"51\",\"descripcion\":\"Tensor\",\"cantidad\":\"1\",\"stock\":\"19\",\"precio\":\"140\",\"total\":\"140\"},{\"id\":\"52\",\"descripcion\":\"Bascula \",\"cantidad\":\"5\",\"stock\":\"12\",\"precio\":\"182\",\"total\":\"910\"},{\"id\":\"53\",\"descripcion\":\"Bomba Hidrostatica\",\"cantidad\":\"1\",\"stock\":\"8\",\"precio\":\"1078\",\"total\":\"1078\"}]', 404.32, 2128, 2532.32, 'Efectivo', '2017-12-26 22:26:51'),
-(35, 10019, 5, 57, '[{\"id\":\"56\",\"descripcion\":\"Cizalla de Palanca\",\"cantidad\":\"15\",\"stock\":\"3\",\"precio\":\"630\",\"total\":\"9450\"},{\"id\":\"55\",\"descripcion\":\"Cilindro muestra de concreto\",\"cantidad\":\"1\",\"stock\":\"17\",\"precio\":\"560\",\"total\":\"560\"}]', 1901.9, 10010, 11911.9, 'Efectivo', '2017-12-26 22:27:13'),
-(36, 10020, 4, 57, '[{\"id\":\"55\",\"descripcion\":\"Cilindro muestra de concreto\",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"560\",\"total\":\"560\"},{\"id\":\"54\",\"descripcion\":\"Chapeta\",\"cantidad\":\"1\",\"stock\":\"16\",\"precio\":\"924\",\"total\":\"924\"}]', 281.96, 1484, 1765.96, 'TC-46346346346', '2017-12-26 22:27:42'),
-(37, 10021, 3, 1, '[{\"id\":\"60\",\"descripcion\":\"Cortadora de Baldosin\",\"cantidad\":\"1\",\"stock\":\"13\",\"precio\":\"1302\",\"total\":\"1302\"},{\"id\":\"59\",\"descripcion\":\"Cono slump\",\"cantidad\":\"1\",\"stock\":\"15\",\"precio\":\"196\",\"total\":\"196\"}]', 149.8, 1498, 1647.8, 'Efectivo', '2018-02-06 22:47:02');
 
 --
 -- Índices para tablas volcadas
@@ -432,19 +874,19 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `carrito_compra`
 --
 ALTER TABLE `carrito_compra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `descuentos`
@@ -456,7 +898,7 @@ ALTER TABLE `descuentos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -468,7 +910,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
